@@ -1,0 +1,118 @@
+<!DOCSTYPE html>
+    <html lang="zh-cn">
+
+    <head>
+        <link rel="icon" type="image/png" href="icons8-c-50.png">
+        <title>ccx的博客</title>
+        <link href="icons8-c-50.png">
+        <style>
+            .back1 {
+                width: 100%;
+                height: 200%;
+                /*background-image: url("backgroud_star.jpg");*/
+                background-color: rgba(0, 0, 0, 0.171);
+                float: left;
+                position: absolute;
+                z-index: 1;
+            }
+
+            @font-face {
+                font-family: dingyangshouxie;
+                src: url('HuaGuangGangTieZhiHei-CuHei-2.ttf');
+            }
+
+            .jianjie {
+                font-family: dingyangshouxie;
+                width: 50%;
+                height: 50px;
+                font-size: 40px;
+                color: rgb(87, 93, 95);
+                position: absolute;
+                z-index: 2;
+                /*动画*/
+                overflow: hidden;
+                /* 隐藏溢出文字 */
+                white-space: nowrap;
+                /* 禁止换行 */
+                margin: 0 auto;
+                letter-spacing: 2px;
+                /* 字母间距 */
+            }
+            .jie_ccx{
+                top: 50;
+                left: 50;      
+                animation:
+                    typing 4s steps(40, end);          
+            }
+            .jie_love_program{
+                top: 100;
+                left: 50;       
+                animation:
+                    typing 4s steps(40, end);          
+            }
+            .jie_love_plane{
+                top: 150;
+                left: 50;       
+                animation:
+                    typing 4s steps(40, end);                
+            }
+            .back2 {
+                width: 99%;
+                height: 40%;
+                position: relative;
+                z-index: 0;
+                background-color: rgb(87, 93, 95);
+                margin: 0 auto;
+                top: 159%;
+            }
+
+            .bilibili {
+                font-family: dingyangshouxie;
+                width: 50%;
+                height: 50px;
+                position: absolute;
+                text-decoration: none;
+                z-index: 2;
+                color: rgb(88, 95, 87);
+                left: 10;
+                top: 200;
+            }
+            .game{
+                font-family: dingyangshouxie;
+                width: 50%;
+                height: 50px;
+                position: absolute;
+                text-decoration: none;
+                z-index: 2;
+                color: rgb(88, 95, 87);
+                left: 10;
+                top: 400;               
+            }
+            @keyframes typing {
+                from {
+                    width: 0
+                }
+
+                99% {
+                    width: 100%
+                }
+                to {
+                    width: 0;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+
+        
+        <div class="back1"></div>
+        <div class="back2"></div>
+        <div class="jianjie jie_ccx">我是ccx</div>
+        <div class="jianjie jie_love_program">我是计算机爱好者</div>
+        <div class="jianjie jie_love_plane">我是航模爱好者</div>
+        <a href="https://www.bilibili.com" target="_blank"class="bilibili">bilibili</a>
+        <a href="shili/shili.html" class="game">游戏</a>
+    </body>
+
+    </html>
