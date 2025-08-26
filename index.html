@@ -37,27 +37,31 @@
                 margin: 0 auto;
                 letter-spacing: 2px;
                 /* 字母间距 */
+                animation:
+                    typing 4s steps(40, end);
+            }
+            .lanmu{
+                font-family: dingyangshouxie;
+                width: 50%;
+                height: 50px;
+                position: absolute;
+                text-decoration: none;
+                z-index: 2;
             }
             .jie_ccx{
                 top: 50;
                 left: 50;      
-                animation:
-                    typing 4s steps(40, end);          
             }
             .jie_love_program{
                 top: 100;
-                left: 50;       
-                animation:
-                    typing 4s steps(40, end);          
+                left: 50;           
             }
             .jie_love_plane{
                 top: 150;
-                left: 50;       
-                animation:
-                    typing 4s steps(40, end);                
+                left: 50;              
             }
             .back2 {
-                width: 99%;
+                width: 100%;
                 height: 40%;
                 position: relative;
                 z-index: 0;
@@ -67,71 +71,35 @@
             }
 
             .bilibili {
-                font-family: dingyangshouxie;
-                width: 50%;
-                height: 50px;
-                position: absolute;
-                text-decoration: none;
-                z-index: 2;
                 color: rgb(26, 148, 189);
                 left: 50;
                 top: 200;
             }
             .game{
-                font-family: dingyangshouxie;
-                width: 50%;
-                height: 50px;
-                position: absolute;
-                text-decoration: none;
-                z-index: 2;
                 color: rgb(88, 95, 87);
                 left: 250;
                 top: 200;               
             }
             .deepseek{
-                font-family: dingyangshouxie;
-                width: 50%;
-                height: 50px;
-                position: absolute;
-                text-decoration: none;
-                z-index: 2;
                 color: rgb(74, 89, 228);
                 left: 450;
                 top: 200;                     
             }
             .luogu{
-                font-family: dingyangshouxie;
-                width: 100px;
-                height: 50px;
-                position: absolute;
-                text-decoration: none;
-                z-index: 2;
                 color: rgb(102, 180, 190);
                 left: 650;
                 top: 200;                   
             }
             .gitee{
-                font-family: dingyangshouxie;
-                width: 100px;
-                height: 50px;
-                position: absolute;
-                text-decoration: none;
-                z-index: 2;
                 color: rgb(168, 27, 27);
                 left: 850;
                 top: 200;                   
             }    
             .xiaoheizi{
-                font-family: dingyangshouxie;
-                width: 100px;
-                height: 50px;
-                position: absolute;
-                text-decoration: none;
-                z-index: 2;
-                color: rgb(255, 255, 255);
+                color: rgb(0, 0, 0);
                 left: 1050;
                 top: 200;                   
-            }          
+            }
             @keyframes typing {
                 from {
                     width: 0
@@ -155,12 +123,12 @@
         <div class="jianjie jie_ccx">我是ccx</div>
         <div class="jianjie jie_love_program">我是计算机爱好者</div>
         <div class="jianjie jie_love_plane">我是航模爱好者</div>
-        <a href="https://www.bilibili.com" target="_blank"class="bilibili">bilibili</a>
-        <a href="https://www.32r.com/soft/136278.html"target="_blank" class="game">死神vs火影下载</a>
-        <a href="https://www.deepseek.com"target="_blank" class="deepseek">deepseek</a>
-        <a href="https://www.luogu.com.cn"target="_blank" class="luogu">洛谷</a>
-        <a href="https://www.gitee.com"target="_blank" class="gitee">gitee</a>
-        <a href="https://caocx.dpdns.org/小黑子跳悬崖.zip" download="小黑子跳悬崖.zip" class="xiaoheizi">小黑子跳悬崖</a>
+        <a href="https://www.bilibili.com" target="_blank"class="lanmu bilibili">bilibili</a>
+        <a href="https://www.32r.com/soft/136278.html"target="_blank" class="lanmu game">死神vs火影下载</a>
+        <a href="https://www.deepseek.com"target="_blank" class="lanmu deepseek">deepseek</a>
+        <a href="https://www.luogu.com.cn"target="_blank" class="lanmu luogu">洛谷</a>
+        <a href="https://www.gitee.com"target="_blank" class="lanmu gitee">gitee</a>
+        <a href="https://caocx.dpdns.org/小黑子跳悬崖.zip" class="lanmu xiaoheizi">小黑子跳悬崖</a>
     </body>
 
     </html>
