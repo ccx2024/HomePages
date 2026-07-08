@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CCX的个人博客 - 首页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ===== 全局样式（所有页面共用） ===== */
+        :root {
+            --primary: #4f8cf7;
+            --primary-dark: #3a6fd1;
+            --bg: #f0f4ff;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            --radius: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --nav-height: 68px;
+        }
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #e2e8f0;
+            --text-light: #94a3b8;
+            --border: #334155;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            transition: background var(--transition), color var(--transition);
+            padding-top: var(--nav-height);
+        }
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color var(--transition);
+        }
+        a:hover {
+            color: var(--primary-dark);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===== 导航栏 ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-height);
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+            background: rgba(var(--card-bg-rgb, 255, 255, 255), 0.85);
+            transition: background var(--transition), border-color var(--transition);
+        }
+        .navbar {
+            --card-bg-rgb: 255, 255, 255;
+        }
+        [data-theme="dark"] .navbar {
+            --card-bg-rgb: 30, 41, 59;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+        .logo span {
+            color: var(--primary);
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-light);
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width var(--transition);
+        }
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text);
+        }
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: background var(--transition), color var(--transition);
+        }
+        .theme-toggle:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* ===== 页面头部 ===== */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin: 24px 0 32px;
+        }
+        .page-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .back-home {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: all var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .back-home:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        /* ===== 首页特有 ===== */
+        .hero {
+            text-align: center;
+            padding: 60px 0 30px;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--primary), #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-top: 8px;
+            font-style: italic;
+        }
+        .intro-section {
+            max-width: 700px;
+            margin: 40px auto 50px;
+            padding: 28px 36px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            text-align: center;
+            animation: slideInUp 0.8s ease both;
+        }
+        @keyframes slideInUp {
+            0% { opacity: 0; transform: translateY(40px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .intro-section p {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        .intro-section .highlight {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .intro-section .intro-icons {
+            margin-top: 12px;
+            font-size: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            color: var(--text-light);
+        }
+        .intro-section .intro-icons i {
+            transition: transform var(--transition), color var(--transition);
+            cursor: default;
+        }
+        .intro-section .intro-icons i:hover {
+            transform: scale(1.2);
+            color: var(--primary);
+        }
+        .links-section {
+            max-width: 900px;
+            margin: 0 auto 60px;
+            padding: 24px 0;
+        }
+        .links-section h3 {
+            text-align: center;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 28px;
+            color: var(--text);
+        }
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+        .link-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 16px;
+            text-align: center;
+            transition: all var(--transition);
+            box-shadow: var(--shadow);
+            color: var(--text);
+        }
+        .link-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+            border-color: var(--primary);
+        }
+        .link-item i {
+            font-size: 2.4rem;
+            color: var(--primary);
+            margin-bottom: 6px;
+            display: block;
+        }
+        .link-item .link-name {
+            font-weight: 600;
+            font-size: 1rem;
+            display: block;
+        }
+        .link-item .link-desc {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* ===== 通用卡片网格 ===== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 28px;
+            margin: 20px 0 40px;
+        }
+        .item-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: all var(--transition);
+        }
+        .item-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+        }
+        .item-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: var(--bg);
+        }
+        .item-card .item-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin: 12px 0 6px;
+        }
+        .item-card .item-desc {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+        .download-btn {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: background var(--transition);
+        }
+        .download-btn:hover {
+            background: var(--primary-dark);
+            color: #fff;
+        }
+
+        /* ===== 编程教学列表 ===== */
+        .teach-list {
+            list-style: none;
+            margin: 16px 0;
+        }
+        .teach-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .teach-list li:last-child {
+            border-bottom: none;
+        }
+        .teach-list .teach-name {
+            font-weight: 500;
+        }
+        .teach-list .teach-link {
+            font-size: 0.85rem;
+        }
+
+        /* ===== 文章投稿 ===== */
+        .submit-area {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 24px 28px;
+            margin: 20px 0 32px;
+            box-shadow: var(--shadow);
+        }
+        .submit-area h4 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+        .submit-area input,
+        .submit-area textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--bg);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border var(--transition);
+            margin-bottom: 12px;
+        }
+        .submit-area input:focus,
+        .submit-area textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .submit-area .submit-btn {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 8px 28px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background var(--transition);
+        }
+        .submit-area .submit-btn:hover {
+            background: var(--primary-dark);
+        }
+        .article-list .post-item {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 20px 24px;
+            margin-bottom: 18px;
+            box-shadow: var(--shadow);
+        }
+        .post-item .post-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        .post-item .post-meta {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin: 4px 0 8px;
+        }
+        .post-item .post-excerpt {
+            color: var(--text-light);
+        }
+
+        /* ===== 页脚 ===== */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 28px 0;
+            margin-top: 40px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            background: var(--card-bg);
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: var(--nav-height);
+                left: 0;
+                right: 0;
+                background: var(--card-bg);
+                padding: 20px 28px;
+                gap: 16px;
+                border-bottom: 1px solid var(--border);
+                box-shadow: var(--shadow);
+            }
+            .nav-links.open {
+                display: flex;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            .hero .subtitle {
+                font-size: 1rem;
+            }
+            .intro-section {
+                padding: 20px;
+            }
+            .link-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .navbar {
+                padding: 0 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 导航栏 ===== -->
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="logo">CCX<span>.</span></a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html" class="active">首页</a></li>
+            <li><a href="music.html">音乐</a></li>
+            <li><a href="game.html">游戏</a></li>
+            <li><a href="code.html">代码</a></li>
+            <li><a href="aviation.html">航空</a></li>
+            <li><a href="article.html">文章</a></li>
+            <li>
+                <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </li>
+        </ul>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- ===== 主页内容 ===== -->
+    <main class="container">
+        <div class="hero">
+            <h1>CCX的个人博客</h1>
+            <p class="subtitle">恰同学少年，风华正茂</p>
+        </div>
+
+        <div class="intro-section">
+            <p>
+                <span class="highlight">我是CCX</span>，
+                <span class="highlight">我是航空爱好者</span>，
+                <span class="highlight">我是编程爱好者</span>
+            </p>
+            <div class="intro-icons">
+                <i class="fas fa-plane" title="航空"></i>
+                <i class="fas fa-code" title="编程"></i>
+                <i class="fas fa-music" title="音乐"></i>
+                <i class="fas fa-gamepad" title="游戏"></i>
+            </div>
+        </div>
+
+        <div class="links-section">
+            <h3><i class="fas fa-link" style="color:var(--primary);"></i> 常用网站</h3>
+            <div class="link-grid">
+                <a href="https://github.com" target="_blank" class="link-item">
+                    <i class="fab fa-github"></i>
+                    <span class="link-name">GitHub</span>
+                    <span class="link-desc">全球最大的代码托管平台</span>
+                </a>
+                <a href="https://bilibili.com" target="_blank" class="link-item">
+                    <i class="fab fa-bilibili"></i>
+                    <span class="link-name">B站</span>
+                    <span class="link-desc">年轻人的学习与娱乐社区</span>
+                </a>
+                <a href="https://zhihu.com" target="_blank" class="link-item">
+                    <i class="fab fa-zhihu"></i>
+                    <span class="link-name">知乎</span>
+                    <span class="link-desc">知识分享与问答社区</span>
+                </a>
+                <a href="https://juejin.cn" target="_blank" class="link-item">
+                    <i class="fab fa-js"></i>
+                    <span class="link-name">掘金</span>
+                    <span class="link-desc">技术文章与开发者社区</span>
+                </a>
+                <a href="https://stackoverflow.com" target="_blank" class="link-item">
+                    <i class="fab fa-stack-overflow"></i>
+                    <span class="link-name">Stack Overflow</span>
+                    <span class="link-desc">程序员问答圣地</span>
+                </a>
+                <a href="https://www.wikipedia.org" target="_blank" class="link-item">
+                    <i class="fab fa-wikipedia-w"></i>
+                    <span class="link-name">维基百科</span>
+                    <span class="link-desc">自由的百科全书</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== 页脚 ===== -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 CCX · 用 <span style="color:#f472b6;">♥</span> 书写 · 保持好奇</p>
+            <p style="margin-top:4px; font-size:0.8rem;"><i class="fas fa-code"></i> 简洁 · 优雅 · 有温度</p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            // 主题切换
+            const themeToggle = document.getElementById('themeToggle');
+            const icon = themeToggle.querySelector('i');
+            let currentTheme = localStorage.getItem('blog-theme') || 'light';
+
+            function setTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+                localStorage.setItem('blog-theme', theme);
+                currentTheme = theme;
+            }
+            setTheme(currentTheme);
+            themeToggle.addEventListener('click', function() {
+                setTheme(currentTheme === 'light' ? 'dark' : 'light');
+            });
+
+            // 移动端菜单
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            const navLinks = document.getElementById('navLinks');
+            mobileBtn.addEventListener('click', function() {
+                navLinks.classList.toggle('open');
+                const i = this.querySelector('i');
+                i.classList.toggle('fa-bars');
+                i.classList.toggle('fa-times');
+            });
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        navLinks.classList.remove('open');
+                        const i = mobileBtn.querySelector('i');
+                        i.classList.add('fa-bars');
+                        i.classList.remove('fa-times');
+                    }
+                });
+            });
+
+            // 导航栏阴影
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', function() {
+                navbar.style.boxShadow = window.scrollY > 20 ? '0 4px 20px rgba(0,0,0,0.06)' : 'none';
+            }, { passive: true });
+        })();
+    </script>
+</body>
+</html>
