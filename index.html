@@ -6,7 +6,7 @@
     <title>CCX的个人博客 - 首页</title>
     <!-- Font Awesome 6 (免费图标库) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <!-- Iconify 图标库 (用于洛谷图标) -->
+    <!-- Iconify 图标库 (用于洛谷、CSDN 等) -->
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <style>
         /* ===== 全局样式 ===== */
@@ -148,41 +148,10 @@
             cursor: pointer;
         }
 
-        /* ===== 页面头部 ===== */
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin: 24px 0 32px;
-        }
-        .page-header h2 {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-        .back-home {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: 500;
-            color: var(--text-light);
-            transition: all var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .back-home:hover {
-            background: var(--primary);
-            color: #fff;
-            border-color: var(--primary);
-        }
-
         /* ===== 首页特有 ===== */
         .hero {
             text-align: center;
-            padding: 60px 0 30px;
+            padding: 60px 0 20px;
         }
         .hero h1 {
             font-size: 3rem;
@@ -199,9 +168,70 @@
             margin-top: 8px;
             font-style: italic;
         }
+
+        /* ===== 时间卡片 ===== */
+        .time-card {
+            max-width: 700px;
+            margin: 20px auto 10px;
+            padding: 18px 28px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+            transition: background var(--transition), border-color var(--transition), box-shadow var(--transition);
+        }
+        .time-date,
+        .time-clock {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        .time-card .fa-calendar-alt,
+        .time-card .fa-clock {
+            color: var(--primary);
+            font-size: 1.3rem;
+            width: 1.6rem;
+            text-align: center;
+        }
+        .time-date .date-text {
+            font-weight: 600;
+        }
+        .time-date .weekday {
+            color: var(--text-light);
+            font-weight: 400;
+            font-size: 0.95rem;
+            margin-left: 4px;
+        }
+        .time-clock .clock-text {
+            font-feature-settings: "tnum";
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            font-variant-numeric: tabular-nums;
+        }
+        @media (max-width: 600px) {
+            .time-card {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 16px 20px;
+            }
+            .time-date,
+            .time-clock {
+                font-size: 1rem;
+                width: 100%;
+            }
+        }
+
+        /* ===== 简介区域 ===== */
         .intro-section {
             max-width: 700px;
-            margin: 40px auto 50px;
+            margin: 30px auto 40px;
             padding: 28px 36px;
             background: var(--card-bg);
             border-radius: var(--radius);
@@ -211,8 +241,14 @@
             animation: slideInUp 0.8s ease both;
         }
         @keyframes slideInUp {
-            0% { opacity: 0; transform: translateY(40px); }
-            100% { opacity: 1; transform: translateY(0); }
+            0% {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         .intro-section p {
             font-size: 1.2rem;
@@ -238,6 +274,8 @@
             transform: scale(1.2);
             color: var(--primary);
         }
+
+        /* ===== 常用网站 ===== */
         .links-section {
             max-width: 900px;
             margin: 0 auto 60px;
@@ -252,47 +290,48 @@
         }
         .link-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 20px;
         }
         .link-item {
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 20px 16px;
+            padding: 18px 12px;
             text-align: center;
             transition: all var(--transition);
             box-shadow: var(--shadow);
             color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         .link-item:hover {
             transform: translateY(-4px);
             box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
             border-color: var(--primary);
         }
-        .link-item i {
-            font-size: 2.4rem;
-            color: var(--primary);
+        .link-item img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            border-radius: 6px;
             margin-bottom: 6px;
-            display: block;
-        }
-        .link-item .iconify {
-            display: block;
-            margin: 0 auto 6px;
         }
         .link-item .link-name {
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.95rem;
             display: block;
         }
         .link-item .link-desc {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-light);
-            margin-top: 4px;
+            margin-top: 2px;
             display: block;
         }
 
-        /* ===== 通用卡片网格 ===== */
+        /* ===== 通用卡片网格（其他页面用） ===== */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -472,14 +511,10 @@
                 padding: 20px;
             }
             .link-grid {
-                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             }
             .card-grid {
                 grid-template-columns: 1fr;
-            }
-            .page-header {
-                flex-direction: column;
-                align-items: flex-start;
             }
             .navbar {
                 padding: 0 20px;
@@ -535,11 +570,27 @@
 
     <!-- ===== 主页内容 ===== -->
     <main class="container">
+
+        <!-- Hero -->
         <div class="hero">
             <h1>CCX的个人博客</h1>
             <p class="subtitle">恰同学少年，风华正茂</p>
         </div>
 
+        <!-- 时间 & 日历卡片 -->
+        <div class="time-card">
+            <div class="time-date">
+                <span class="date-icon"><i class="far fa-calendar-alt"></i></span>
+                <span class="date-text" id="currentDate">----年--月--日</span>
+                <span class="weekday" id="currentWeekday">---</span>
+            </div>
+            <div class="time-clock">
+                <span class="clock-icon"><i class="far fa-clock"></i></span>
+                <span class="clock-text" id="currentTime">--:--:--</span>
+            </div>
+        </div>
+
+        <!-- 简介区域 -->
         <div class="intro-section">
             <p>
                 <span class="highlight">我是CCX</span>，
@@ -554,52 +605,61 @@
             </div>
         </div>
 
+        <!-- 常用网站 -->
         <div class="links-section">
             <h3><i class="fas fa-link" style="color:var(--primary);"></i> 常用网站</h3>
             <div class="link-grid">
+                <!-- GitHub -->
                 <a href="https://github.com" target="_blank" class="link-item">
-                    <i class="fab fa-github"></i>
+                    <img src="https://github.com/favicon.ico" alt="GitHub" />
                     <span class="link-name">GitHub</span>
-                    <span class="link-desc">全球最大的代码托管平台</span>
+                    <span class="link-desc">代码托管平台</span>
                 </a>
+                <!-- B站 -->
                 <a href="https://bilibili.com" target="_blank" class="link-item">
-                    <img src="https://www.bilibili.com/favicon.ico" alt="B站" style="width:32px;height:32px;display:block;margin:0 auto 6px;border-radius:4px;">
+                    <img src="https://www.bilibili.com/favicon.ico" alt="B站" />
                     <span class="link-name">B站</span>
-                    <span class="link-desc">年轻人的学习与娱乐社区</span>
+                    <span class="link-desc">学习与娱乐社区</span>
                 </a>
-                <a href="https://gitee.com" target="_blank" class="link-item">
-                    <img src="https://gitee.com/favicon.ico" alt="Gitee" style="width:32px;height:32px;display:block;margin:0 auto 6px;border-radius:4px;">
-                    <span class="link-name">Gitee</span>
-                    <span class="link-desc">国内代码托管与协作平台</span>
-                </a>
-                <!-- ===== 掘金 → 洛谷（已修改） ===== -->
+                <!-- 洛谷 -->
                 <a href="https://www.luogu.com.cn" target="_blank" class="link-item">
-                    <img src="https://www.luogu.com.cn/favicon.ico" alt="洛谷" style="width:32px;height:32px;display:block;margin:0 auto 6px;border-radius:4px;">
+                    <img src="https://www.luogu.com.cn/favicon.ico" alt="洛谷" />
                     <span class="link-name">洛谷</span>
-                    <span class="link-desc">OI/ACM 在线题库与竞赛社区</span>
+                    <span class="link-desc">OI/ACM 在线题库</span>
                 </a>
-                <a href="https://www.csdn.net" target="_blank" class="link-item">
-                    <img src="https://www.csdn.net/favicon.ico" alt="CSDN" style="width:32px;height:32px;display:block;margin:0 auto 6px;border-radius:4px;">
-                    <span class="link-name">CSDN</span>
-                    <span class="link-desc">中文开发者技术社区</span>
+                <!-- Gitee -->
+                <a href="https://gitee.com" target="_blank" class="link-item">
+                    <img src="https://gitee.com/favicon.ico" alt="Gitee" />
+                    <span class="link-name">Gitee</span>
+                    <span class="link-desc">国内代码托管</span>
                 </a>
+                <!-- OI Wiki -->
                 <a href="https://oi-wiki.org" target="_blank" class="link-item">
-                    <img src="https://oi-wiki.org/favicon.ico" alt="OI Wiki" style="width:32px;height:32px;display:block;margin:0 auto 6px;border-radius:4px;">
-                    <span class="link-name">O   I Wiki</span>
-                    <span class="link-desc">免费开放的 OI 知识整合站点</span>
+                    <img src="https://oi-wiki.org/favicon.ico" alt="OI Wiki" />
+                    <span class="link-name">OI Wiki</span>
+                    <span class="link-desc">OI 知识整合</span>
                 </a>
+                <!-- DJI 大疆 -->
+                <a href="https://www.dji.com" target="_blank" class="link-item">
+                    <img src="https://www.dji.com/favicon.ico" alt="DJI" />
+                    <span class="link-name">DJI 大疆</span>
+                    <span class="link-desc">无人机与航拍</span>
+                </a>
+                <!-- DeepSeek -->
                 <a href="https://www.deepseek.com" target="_blank" class="link-item">
-                    <img src="https://www.deepseek.com/favicon.ico" alt="DeepSeek" style="width:32px;height:32px;display:block;margin:0 auto 6px;border-radius:4px;">
+                    <img src="https://www.deepseek.com/favicon.ico" alt="DeepSeek" />
                     <span class="link-name">DeepSeek</span>
-                    <span class="link-desc">新一代 AI 对话助手与知识平台</span>
+                    <span class="link-desc">AI 对话助手</span>
                 </a>
+                <!-- Cloudflare -->
                 <a href="https://www.cloudflare.com" target="_blank" class="link-item">
-                    <img src="https://www.cloudflare.com/favicon.ico" alt="Cloudflare" style="width:32px;height:32px;display:block;margin:0 auto 6px;border-radius:4px;">
+                    <img src="https://www.cloudflare.com/favicon.ico" alt="Cloudflare" />
                     <span class="link-name">Cloudflare</span>
-                    <span class="link-desc">全球领先的 CDN 与网络安全服务</span>
+                    <span class="link-desc">CDN & 网络安全</span>
                 </a>
             </div>
         </div>
+
     </main>
 
     <!-- ===== 页脚 ===== -->
@@ -612,7 +672,7 @@
 
     <script>
         (function() {
-            // 主题切换
+            // ---------- 主题切换 ----------
             const themeToggle = document.getElementById('themeToggle');
             const icon = themeToggle.querySelector('i');
             let currentTheme = localStorage.getItem('blog-theme') || 'light';
@@ -624,11 +684,12 @@
                 currentTheme = theme;
             }
             setTheme(currentTheme);
+
             themeToggle.addEventListener('click', function() {
                 setTheme(currentTheme === 'light' ? 'dark' : 'light');
             });
 
-            // 移动端菜单
+            // ---------- 移动端菜单 ----------
             const mobileBtn = document.getElementById('mobileMenuBtn');
             const navLinks = document.getElementById('navLinks');
             mobileBtn.addEventListener('click', function() {
@@ -637,6 +698,7 @@
                 i.classList.toggle('fa-bars');
                 i.classList.toggle('fa-times');
             });
+
             navLinks.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', function() {
                     if (window.innerWidth <= 768) {
@@ -648,12 +710,34 @@
                 });
             });
 
-            // 导航栏阴影
+            // ---------- 导航栏阴影 ----------
             const navbar = document.getElementById('navbar');
             window.addEventListener('scroll', function() {
                 navbar.style.boxShadow = window.scrollY > 20 ? '0 4px 20px rgba(0,0,0,0.06)' : 'none';
             }, { passive: true });
+
+            // ===== 时钟 & 日历更新 =====
+            function updateClockAndCalendar() {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+                const weekday = weekdays[now.getDay()];
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+
+                document.getElementById('currentDate').textContent = `${year}年${month}月${day}日`;
+                document.getElementById('currentWeekday').textContent = weekday;
+                document.getElementById('currentTime').textContent = `${hours}:${minutes}:${seconds}`;
+            }
+
+            updateClockAndCalendar();
+            setInterval(updateClockAndCalendar, 1000);
+
         })();
     </script>
+
 </body>
 </html>
