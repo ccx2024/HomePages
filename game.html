@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CCX的个人博客 - 游戏</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ===== 全局样式（与 music.html 保持一致） ===== */
+        :root {
+            --primary: #4f8cf7;
+            --primary-dark: #3a6fd1;
+            --bg: #f0f4ff;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            --radius: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Segoe UI', system-ui, sans-serif;
+            --nav-height: 68px;
+        }
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #e2e8f0;
+            --text-light: #94a3b8;
+            --border: #334155;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            transition: background var(--transition), color var(--transition);
+            padding-top: var(--nav-height);
+        }
+        a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===== 导航栏 ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-height);
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+            background: rgba(var(--card-bg-rgb, 255, 255, 255), 0.85);
+            transition: background var(--transition), border-color var(--transition);
+        }
+        .navbar {
+            --card-bg-rgb: 255, 255, 255;
+        }
+        [data-theme="dark"] .navbar {
+            --card-bg-rgb: 30, 41, 59;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+        .logo span {
+            color: var(--primary);
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-light);
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width var(--transition);
+        }
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text);
+        }
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: background var(--transition), color var(--transition);
+        }
+        .theme-toggle:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* ===== 页面头部 ===== */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin: 24px 0 20px;
+        }
+        .page-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .back-home {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: all var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .back-home:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        /* ===== 搜索框 ===== */
+        .search-box {
+            margin-bottom: 24px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid var(--border);
+            border-radius: 30px;
+            background: var(--card-bg);
+            color: var(--text);
+            font-size: 1rem;
+            transition: all var(--transition);
+            outline: none;
+            font-family: inherit;
+        }
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 140, 247, 0.2);
+        }
+        .search-box input::placeholder {
+            color: var(--text-light);
+        }
+        .search-stats {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 6px;
+            text-align: right;
+        }
+
+        /* ===== 卡片网格 ===== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 28px;
+            margin: 0 0 40px;
+            justify-items: center;
+        }
+        .item-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: all var(--transition);
+            max-width: 340px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .item-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+        }
+        .item-card .card-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: var(--bg);
+        }
+        .item-card .item-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin: 12px 0 4px;
+        }
+        .item-card .item-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--primary);
+            background: rgba(79, 140, 247, 0.12);
+            padding: 2px 12px;
+            border-radius: 20px;
+            margin: 4px 0 8px;
+            align-self: flex-start;
+        }
+        .item-card .item-desc {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            flex: 1;
+        }
+        .item-card .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 4px;
+        }
+        .item-card .card-footer .game-rating {
+            color: #f59e0b;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        .detail-btn {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background var(--transition);
+            font-family: inherit;
+        }
+        .detail-btn:hover {
+            background: var(--primary-dark);
+            color: #fff;
+        }
+        .no-result {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            display: none;
+            grid-column: 1 / -1;
+        }
+
+        /* ===== 页脚 ===== */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 28px 0;
+            margin-top: 40px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            background: var(--card-bg);
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: var(--nav-height);
+                left: 0;
+                right: 0;
+                background: var(--card-bg);
+                padding: 20px 28px;
+                gap: 16px;
+                border-bottom: 1px solid var(--border);
+                box-shadow: var(--shadow);
+            }
+            .nav-links.open {
+                display: flex;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .card-grid {
+                grid-template-columns: 1fr;
+                justify-items: center;
+            }
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .navbar {
+                padding: 0 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+        }
+
+        /* ===== 滚动条 ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 导航栏 ===== -->
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="logo">CCX<span>.</span></a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="music.html">音乐</a></li>
+            <li><a href="game.html" class="active">游戏</a></li>
+            <li><a href="code.html">代码</a></li>
+            <li><a href="aviation.html">航空</a></li>
+            <li><a href="article.html">文章</a></li>
+            <li>
+                <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </li>
+        </ul>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- ===== 主体 ===== -->
+    <main class="container">
+        <div class="page-header">
+            <h2><i class="fas fa-gamepad" style="color:var(--primary);"></i> 游戏</h2>
+            <a href="index.html" class="back-home"><i class="fas fa-arrow-left"></i> 返回主页</a>
+        </div>
+
+        <!-- ===== 搜索框 ===== -->
+        <div class="search-box">
+            <input type="text" id="searchGame" placeholder="🎮 输入游戏名称或类型搜索..." />
+            <div class="search-stats" id="searchStats">共 <span id="totalCount">0</span> 款游戏</div>
+        </div>
+
+        <!-- ===== 游戏卡片列表 ===== -->
+        <div class="card-grid" id="gameGrid">
+            <!-- 卡片 1：我的世界 -->
+            <div class="item-card" data-title="我的世界 沙盒 冒险 建造">
+                <img class="card-img" src="https://picsum.photos/seed/minecraft/400/240" alt="我的世界封面" loading="lazy" />
+                <div class="item-title">🎲 我的世界</div>
+                <span class="item-tag"><i class="fas fa-cube"></i> 沙盒 · 冒险</span>
+                <div class="item-desc">在无限的方块世界中自由探索、建造与生存。发挥你的创造力，打造独一无二的天地。</div>
+                <div class="card-footer">
+                    <span class="game-rating"><i class="fas fa-star"></i> 9.7</span>
+                    <a href="game-detail.html?id=minecraft" class="detail-btn"><i class="fas fa-arrow-right"></i> 查看详情</a>
+                </div>
+            </div>
+
+            <!-- 卡片 2：原神 -->
+            <div class="item-card" data-title="原神 开放世界 RPG 冒险">
+                <img class="card-img" src="https://picsum.photos/seed/genshin/400/240" alt="原神封面" loading="lazy" />
+                <div class="item-title">🌄 原神</div>
+                <span class="item-tag"><i class="fas fa-globe-asia"></i> 开放世界 · RPG</span>
+                <div class="item-desc">在提瓦特大陆展开奇幻冒险，邂逅性格各异的伙伴，探索七国的奥秘与故事。</div>
+                <div class="card-footer">
+                    <span class="game-rating"><i class="fas fa-star"></i> 8.9</span>
+                    <a href="game-detail.html?id=genshin" class="detail-btn"><i class="fas fa-arrow-right"></i> 查看详情</a>
+                </div>
+            </div>
+
+            <!-- 卡片 3：赛博朋克2077 -->
+            <div class="item-card" data-title="赛博朋克2077 动作 RPG 科幻">
+                <img class="card-img" src="https://picsum.photos/seed/cyberpunk/400/240" alt="赛博朋克2077封面" loading="lazy" />
+                <div class="item-title">🔮 赛博朋克2077</div>
+                <span class="item-tag"><i class="fas fa-city"></i> 动作 · RPG · 科幻</span>
+                <div class="item-desc">在夜之城的霓虹灯下，扮演义体改造人，在权力与欲望的漩涡中书写自己的传奇。</div>
+                <div class="card-footer">
+                    <span class="game-rating"><i class="fas fa-star"></i> 8.6</span>
+                    <a href="game-detail.html?id=cyberpunk" class="detail-btn"><i class="fas fa-arrow-right"></i> 查看详情</a>
+                </div>
+            </div>
+
+            <!-- 卡片 4：艾尔登法环 -->
+            <div class="item-card" data-title="艾尔登法环 黑暗奇幻 动作 RPG">
+                <img class="card-img" src="https://picsum.photos/seed/eldenring/400/240" alt="艾尔登法环封面" loading="lazy" />
+                <div class="item-title">⚔️ 艾尔登法环</div>
+                <span class="item-tag"><i class="fas fa-skull"></i> 黑暗奇幻 · ARPG</span>
+                <div class="item-desc">在破碎的间隙之地，挑战半神与古王，探索宫崎英高构筑的宏大黑暗史诗。</div>
+                <div class="card-footer">
+                    <span class="game-rating"><i class="fas fa-star"></i> 9.5</span>
+                    <a href="game-detail.html?id=eldenring" class="detail-btn"><i class="fas fa-arrow-right"></i> 查看详情</a>
+                </div>
+            </div>
+
+            <!-- 卡片 5：星露谷物语 -->
+            <div class="item-card" data-title="星露谷物语 模拟经营 农场 休闲">
+                <img class="card-img" src="https://picsum.photos/seed/stardew/400/240" alt="星露谷物语封面" loading="lazy" />
+                <div class="item-title">🌾 星露谷物语</div>
+                <span class="item-tag"><i class="fas fa-seedling"></i> 模拟经营 · 休闲</span>
+                <div class="item-desc">继承祖父的农场，在星露谷中耕种、养殖、交友，享受恬静而充实的田园生活。</div>
+                <div class="card-footer">
+                    <span class="game-rating"><i class="fas fa-star"></i> 9.3</span>
+                    <a href="game-detail.html?id=stardew" class="detail-btn"><i class="fas fa-arrow-right"></i> 查看详情</a>
+                </div>
+            </div>
+
+            <!-- 卡片 6：空洞骑士 -->
+            <div class="item-card" data-title="空洞骑士 动作 平台 冒险">
+                <img class="card-img" src="https://picsum.photos/seed/hollowknight/400/240" alt="空洞骑士封面" loading="lazy" />
+                <div class="item-title">🦋 空洞骑士</div>
+                <span class="item-tag"><i class="fas fa-feather"></i> 动作 · 平台 · 冒险</span>
+                <div class="item-desc">在衰败的地下王国圣巢中，手持骨钉，探寻被遗忘的秘密，直面古老王国的命运。</div>
+                <div class="card-footer">
+                    <span class="game-rating"><i class="fas fa-star"></i> 9.6</span>
+                    <a href="game-detail.html?id=hollowknight" class="detail-btn"><i class="fas fa-arrow-right"></i> 查看详情</a>
+                </div>
+            </div>
+
+            <!-- 无结果提示 -->
+            <div class="no-result" id="noResult">😅 没有找到匹配的游戏</div>
+        </div>
+    </main>
+
+    <!-- ===== 页脚 ===== -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 CCX · 用 <span style="color:#f472b6;">♥</span> 书写 · 保持好奇</p>
+            <p style="margin-top:4px; font-size:0.8rem;"><i class="fas fa-code"></i> 简洁 · 优雅 · 有温度</p>
+        </div>
+    </footer>
+
+    <script>
+        // ===== 主题切换 & 菜单 =====
+        (function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const icon = themeToggle.querySelector('i');
+            let currentTheme = localStorage.getItem('blog-theme') || 'light';
+
+            function setTheme(t) {
+                document.documentElement.setAttribute('data-theme', t);
+                icon.className = t === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+                localStorage.setItem('blog-theme', t);
+                currentTheme = t;
+            }
+            setTheme(currentTheme);
+            themeToggle.addEventListener('click', function() {
+                setTheme(currentTheme === 'light' ? 'dark' : 'light');
+            });
+
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            const navLinks = document.getElementById('navLinks');
+            mobileBtn.addEventListener('click', function() {
+                navLinks.classList.toggle('open');
+                const i = this.querySelector('i');
+                i.classList.toggle('fa-bars');
+                i.classList.toggle('fa-times');
+            });
+            navLinks.querySelectorAll('a').forEach(l => {
+                l.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        navLinks.classList.remove('open');
+                        const i = mobileBtn.querySelector('i');
+                        i.classList.add('fa-bars');
+                        i.classList.remove('fa-times');
+                    }
+                });
+            });
+
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', function() {
+                navbar.style.boxShadow = window.scrollY > 20 ? '0 4px 20px rgba(0,0,0,0.06)' : 'none';
+            }, { passive: true });
+        })();
+
+        // ===== 🎮 游戏搜索功能 =====
+        (function() {
+            const searchInput = document.getElementById('searchGame');
+            const gameCards = document.querySelectorAll('.item-card');
+            const totalSpan = document.getElementById('totalCount');
+            const noResult = document.getElementById('noResult');
+
+            totalSpan.textContent = gameCards.length;
+
+            searchInput.addEventListener('input', function() {
+                const keyword = this.value.trim().toLowerCase();
+                let visibleCount = 0;
+
+                gameCards.forEach(card => {
+                    const title = (card.dataset.title || '').toLowerCase();
+                    const desc = (card.querySelector('.item-desc')?.textContent || '').toLowerCase();
+                    const match = keyword === '' || title.includes(keyword) || desc.includes(keyword);
+                    if (match) {
+                        card.style.display = '';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                if (visibleCount === 0 && keyword !== '') {
+                    noResult.style.display = 'block';
+                } else {
+                    noResult.style.display = 'none';
+                }
+
+                const stats = document.getElementById('searchStats');
+                if (keyword === '') {
+                    stats.textContent = `共 ${gameCards.length} 款游戏`;
+                } else {
+                    stats.textContent = `找到 ${visibleCount} 款匹配的游戏`;
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
