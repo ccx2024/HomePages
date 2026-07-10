@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>游戏详情 · CCX的个人博客</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ===== 全局样式（与博客统一） ===== */
+        :root {
+            --primary: #4f8cf7;
+            --primary-dark: #3a6fd1;
+            --bg: #f0f4ff;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            --radius: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Segoe UI', system-ui, sans-serif;
+            --nav-height: 68px;
+        }
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #e2e8f0;
+            --text-light: #94a3b8;
+            --border: #334155;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            transition: background var(--transition), color var(--transition);
+            padding-top: var(--nav-height);
+        }
+        a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===== 导航栏 ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-height);
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+            background: rgba(var(--card-bg-rgb, 255, 255, 255), 0.85);
+            transition: background var(--transition), border-color var(--transition);
+        }
+        .navbar {
+            --card-bg-rgb: 255, 255, 255;
+        }
+        [data-theme="dark"] .navbar {
+            --card-bg-rgb: 30, 41, 59;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+        .logo span {
+            color: var(--primary);
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-light);
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width var(--transition);
+        }
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text);
+        }
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: background var(--transition), color var(--transition);
+        }
+        .theme-toggle:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* ===== 详情页样式 ===== */
+        .detail-header {
+            margin: 24px 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .detail-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .back-link {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: all var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .back-link:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .detail-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 32px 36px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+        }
+        .detail-card .game-cover {
+            width: 100%;
+            max-height: 320px;
+            object-fit: cover;
+            border-radius: 12px;
+            background: var(--bg);
+            margin-bottom: 20px;
+        }
+        .detail-card .game-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .detail-card .game-tag {
+            display: inline-block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            background: rgba(79, 140, 247, 0.12);
+            padding: 4px 16px;
+            border-radius: 30px;
+            margin: 4px 0 16px;
+        }
+        .detail-card .game-rating {
+            color: #f59e0b;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+        .detail-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 28px 0 12px;
+            border-left: 4px solid var(--primary);
+            padding-left: 14px;
+        }
+        .detail-card h3:first-of-type {
+            margin-top: 8px;
+        }
+        .detail-card p {
+            color: var(--text-light);
+            margin-bottom: 12px;
+        }
+        .detail-card ul {
+            padding-left: 24px;
+            margin-bottom: 16px;
+            color: var(--text-light);
+        }
+        .detail-card ul li {
+            margin-bottom: 6px;
+        }
+        .download-section {
+            margin: 24px 0 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background var(--transition);
+            font-family: inherit;
+        }
+        .download-btn:hover {
+            background: var(--primary-dark);
+            color: #fff;
+        }
+        .download-btn i {
+            font-size: 1.1rem;
+        }
+        .story-block {
+            background: var(--bg);
+            padding: 16px 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+            margin: 16px 0;
+            color: var(--text);
+        }
+        .story-block p {
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+        .story-block .story-source {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            text-align: right;
+            margin-top: 8px;
+        }
+        .not-found {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+        .not-found i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 28px 0;
+            margin-top: 20px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            background: var(--card-bg);
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: var(--nav-height);
+                left: 0;
+                right: 0;
+                background: var(--card-bg);
+                padding: 20px 28px;
+                gap: 16px;
+                border-bottom: 1px solid var(--border);
+                box-shadow: var(--shadow);
+            }
+            .nav-links.open {
+                display: flex;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .navbar {
+                padding: 0 20px;
+            }
+            .detail-card {
+                padding: 20px;
+            }
+            .detail-card .game-title {
+                font-size: 1.8rem;
+            }
+            .detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 导航栏 ===== -->
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="logo">CCX<span>.</span></a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="music.html">音乐</a></li>
+            <li><a href="game.html" class="active">游戏</a></li>
+            <li><a href="code.html">代码</a></li>
+            <li><a href="aviation.html">航空</a></li>
+            <li><a href="article.html">文章</a></li>
+            <li>
+                <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </li>
+        </ul>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- ===== 主体 ===== -->
+    <main class="container">
+        <div class="detail-header">
+            <h2><i class="fas fa-gamepad" style="color:var(--primary);"></i> 游戏详情</h2>
+            <a href="game.html" class="back-link"><i class="fas fa-arrow-left"></i> 返回游戏列表</a>
+        </div>
+
+        <!-- ===== 详情卡片 ===== -->
+        <div class="detail-card" id="detailCard">
+            <!-- 由 JavaScript 动态渲染 -->
+            <div id="loadingMessage" style="text-align:center;padding:40px 0;color:var(--text-light);">
+                <i class="fas fa-spinner fa-spin" style="font-size:2rem;"></i>
+                <p style="margin-top:12px;">加载游戏信息...</p>
+            </div>
+            <div id="gameContent" style="display:none;"></div>
+            <div id="notFound" style="display:none;" class="not-found">
+                <i class="fas fa-search"></i>
+                <h3>未找到该游戏</h3>
+                <p>请检查链接是否正确，或返回游戏列表选择其他游戏。</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== 页脚 ===== -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 CCX · 用 <span style="color:#f472b6;">♥</span> 书写 · 保持好奇</p>
+            <p style="margin-top:4px; font-size:0.8rem;"><i class="fas fa-code"></i> 简洁 · 优雅 · 有温度</p>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================================
+        // 1. 主题切换 & 移动端菜单
+        // ============================================================
+        (function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const icon = themeToggle.querySelector('i');
+            let currentTheme = localStorage.getItem('blog-theme') || 'light';
+
+            function setTheme(t) {
+                document.documentElement.setAttribute('data-theme', t);
+                icon.className = t === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+                localStorage.setItem('blog-theme', t);
+                currentTheme = t;
+            }
+            setTheme(currentTheme);
+            themeToggle.addEventListener('click', function() {
+                setTheme(currentTheme === 'light' ? 'dark' : 'light');
+            });
+
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            const navLinks = document.getElementById('navLinks');
+            mobileBtn.addEventListener('click', function() {
+                navLinks.classList.toggle('open');
+                const i = this.querySelector('i');
+                i.classList.toggle('fa-bars');
+                i.classList.toggle('fa-times');
+            });
+            navLinks.querySelectorAll('a').forEach(l => {
+                l.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        navLinks.classList.remove('open');
+                        const i = mobileBtn.querySelector('i');
+                        i.classList.add('fa-bars');
+                        i.classList.remove('fa-times');
+                    }
+                });
+            });
+
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', function() {
+                navbar.style.boxShadow = window.scrollY > 20 ? '0 4px 20px rgba(0,0,0,0.06)' : 'none';
+            }, { passive: true });
+        })();
+
+        // ============================================================
+        // 2. 游戏数据库
+        // ============================================================
+        const gameDatabase = {
+            xiaoheizi: {
+                id: 'xiaoheizi',
+                title: '小黑子跳悬崖',
+                tag: '休闲 · 闯关 · 跑酷',
+                rating: '5.0',
+                cover: 'image/小黑子跳悬崖.png',
+                description: '体量小，即下即玩。第一眼是幼儿园的玩具，实则血压值增高器，心脏且玩且珍惜',
+                gameplay: `
+                    <p><strong>核心玩法：</strong></p>
+                    <ul>
+                        <li><strong>按键操作：</strong> 左右键控制左右，shift跳跃（记得关闭粘滞键），k重开，空格继续。</li>
+                        <li><strong>闯关流程：</strong> 撞按钮，（有一些没有）打开隔板，最后拿到开门按钮，进门下一关</li>
+                    </ul>
+                `,
+                story: `
+                    <div class="story-block">
+                        <p><strong>游戏故事背景：</strong>由某jr同学传入中山一中网吧，一时间风靡全吧，后成为志南颓废团团游</p>
+                        <div class="story-source">—— 中山一中网吧</div>
+                    </div>
+                `,
+                downloadLink: 'software/xiaoheizi.zip',
+                downloadText: '点击下载'
+            },
+            genshin: {
+                id: 'genshin',
+                title: '🌄 原神',
+                tag: '开放世界 · RPG · 动作',
+                rating: '8.9',
+                cover: 'https://picsum.photos/seed/genshin/800/400',
+                description: '《原神》是由米哈游开发的开放世界角色扮演游戏。玩家扮演"旅行者"，在名为"提瓦特"的奇幻大陆上探索七国，与同伴一起对抗深渊教团，寻找失散的亲人。',
+                gameplay: `
+                    <p><strong>核心玩法：</strong></p>
+                    <ul>
+                        <li><strong>元素战斗：</strong> 七种元素（风、火、雷、水、冰、岩、草）相互反应，搭配角色技能打出高额伤害。</li>
+                        <li><strong>开放世界：</strong> 自由攀爬、游泳、飞行，探索城镇、遗迹、秘境，收集神瞳和宝箱。</li>
+                        <li><strong>角色养成：</strong> 通过"祈愿"获取新角色，升级天赋、武器和圣遗物，组建最强队伍。</li>
+                        <li><strong>丰富剧情：</strong> 主线任务、传说任务、世界任务交织，讲述旅行者的冒险故事。</li>
+                    </ul>
+                    <p><strong>特色系统：</strong> 每日委托、深境螺旋、多人联机副本，以及定期更新的版本活动。</p>
+                `,
+                story: `
+                    <div class="story-block">
+                        <p><strong>🎮 世界观设定：</strong> 提瓦特大陆由七位"执政"神祇管辖，每位神祇对应一种元素。五百年前，一场名为"坎瑞亚灾变"的事件改变了世界，导致深渊力量入侵。玩家扮演的旅行者与妹妹/哥哥在穿越星海时被"天理"拦截，失散后苏醒在蒙德，从此踏上寻亲与拯救世界的旅途。</p>
+                        <p><strong>📖 创作背景：</strong> 米哈游受《塞尔达传说：旷野之息》启发，结合日式角色扮演和二次元美术风格，打造出全球现象级作品。其持续更新的"版本前瞻"和"角色 PV"文化，形成了独特的玩家生态。</p>
+                        <div class="story-source">—— 源自游戏内"旅行日志"及米哈游开发者专栏</div>
+                    </div>
+                `,
+                downloadLink: 'https://ys.mihoyo.com/',
+                downloadText: '前往官网下载'
+            }
+        };
+
+        // ============================================================
+        // 3. 渲染详情
+        // ============================================================
+        function renderGame(gameId) {
+            const loading = document.getElementById('loadingMessage');
+            const content = document.getElementById('gameContent');
+            const notFound = document.getElementById('notFound');
+
+            loading.style.display = 'none';
+            content.style.display = 'none';
+            notFound.style.display = 'none';
+
+            const game = gameDatabase[gameId];
+            if (!game) {
+                notFound.style.display = 'block';
+                return;
+            }
+
+            let html = `
+                <img class="game-cover" src="${game.cover}" alt="${game.title}封面" loading="lazy" />
+                <div class="game-title">${game.title}</div>
+                <span class="game-tag"><i class="fas fa-tag"></i> ${game.tag}</span>
+                <div class="game-rating"><i class="fas fa-star"></i> ${game.rating} / 10</div>
+                <p><strong>📖 简介：</strong> ${game.description}</p>
+
+                <h3>🎮 玩法介绍</h3>
+                ${game.gameplay}
+
+                <h3>📜 相关故事</h3>
+                ${game.story}
+
+                <div class="download-section">
+                    <a href="${game.downloadLink}" target="_blank" class="download-btn">
+                        <i class="fas fa-download"></i> ${game.downloadText || '下载游戏'}
+                    </a>
+                </div>
+            `;
+
+            content.innerHTML = html;
+            content.style.display = 'block';
+        }
+
+        // ============================================================
+        // 4. 从 URL 获取 id 并渲染
+        // ============================================================
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (id) {
+                renderGame(id);
+            } else {
+                // 没有 id 参数时，默认显示"我的世界"
+                renderGame('minecraft');
+            }
+        })();
+    </script>
+</body>
+</html>

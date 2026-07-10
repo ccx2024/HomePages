@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>音乐添加工具</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #f0f4ff;
+            color: #1e293b;
+            padding: 30px 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+            padding: 32px 36px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .header h1 i {
+            color: #4f8cf7;
+        }
+        .header .badge {
+            background: #e2e8f0;
+            color: #475569;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 28px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 14px;
+            font-size: 0.95rem;
+        }
+        .subtitle code {
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+        @media (max-width: 850px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 20px;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+        .form-group label .optional {
+            font-weight: 400;
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+        .form-group label .required {
+            color: #ef4444;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background: #fafbfc;
+            transition: border 0.2s, box-shadow 0.2s;
+            font-family: inherit;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4f8cf7;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(79, 140, 247, 0.12);
+        }
+        .form-group .hint {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            margin-top: 3px;
+        }
+        .form-group .hint code {
+            background: #f1f5f9;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+        }
+        .form-group .file-upload-area {
+            border: 2px dashed #e2e8f0;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s, background 0.3s;
+            background: #fafbfc;
+        }
+        .form-group .file-upload-area:hover {
+            border-color: #4f8cf7;
+            background: #f0f4ff;
+        }
+        .form-group .file-upload-area .file-status {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
+        .form-group .file-upload-area .file-status .file-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .form-group .file-upload-area .file-status .file-size {
+            color: #94a3b8;
+        }
+        .form-group .file-upload-area i {
+            font-size: 2rem;
+            color: #4f8cf7;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .btn {
+            padding: 10px 28px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: #4f8cf7;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #3a6fd1;
+        }
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+        .btn-success {
+            background: #22c55e;
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #16a34a;
+        }
+        .btn-warning {
+            background: #f59e0b;
+            color: #fff;
+        }
+        .btn-warning:hover {
+            background: #d97706;
+        }
+        .btn-danger {
+            background: #ef4444;
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .preview-box {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 24px 20px;
+            border: 2px dashed #e2e8f0;
+            min-height: 260px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.3s;
+        }
+        .preview-box.has-preview {
+            border-color: #4f8cf7;
+            border-style: solid;
+        }
+        .preview-box .empty-msg {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+        .preview-box .empty-msg i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 8px;
+            opacity: 0.5;
+        }
+
+        .preview-card {
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            max-width: 300px;
+            width: 100%;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+        }
+        .preview-card .pc-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: #e2e8f0;
+        }
+        .preview-card .pc-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin: 12px 0 4px;
+        }
+        .preview-card .pc-desc {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+        .preview-card .pc-btn {
+            display: inline-block;
+            background: #4f8cf7;
+            color: #fff;
+            padding: 5px 18px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: none;
+            cursor: default;
+        }
+
+        .code-output {
+            margin-top: 20px;
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            font-size: 0.82rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            display: none;
+            position: relative;
+            line-height: 1.6;
+        }
+        .code-output.show {
+            display: block;
+        }
+        .code-output .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: #334155;
+            color: #fff;
+            border: none;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .code-output .copy-btn:hover {
+            background: #475569;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1e293b;
+            color: #fff;
+            padding: 12px 32px;
+            border-radius: 40px;
+            font-weight: 500;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            z-index: 999;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .tip-box {
+            margin-top: 16px;
+            background: #f1f5f9;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            color: #475569;
+            line-height: 1.7;
+        }
+        .tip-box strong {
+            color: #1e293b;
+        }
+        .tip-box code {
+            background: #e2e8f0;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+
+        .save-status {
+            margin-top: 12px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .save-status.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+        .save-status.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .save-status.info {
+            display: block;
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+        .save-status.uploading {
+            display: block;
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 16px;
+            }
+            .header h1 {
+                font-size: 1.4rem;
+            }
+            .btn-group .btn {
+                flex: 1;
+                justify-content: center;
+                padding: 10px 16px;
+                font-size: 0.85rem;
+            }
+            .toast {
+                font-size: 0.85rem;
+                padding: 10px 20px;
+                white-space: normal;
+                max-width: 90%;
+            }
+        }
+
+        .upload-progress {
+            margin-top: 12px;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            display: none;
+        }
+        .upload-progress .bar {
+            height: 100%;
+            background: #4f8cf7;
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 3px;
+        }
+        .upload-progress.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-music"></i> 音乐添加工具</h1>
+            <span class="badge"><i class="fas fa-upload"></i> 一键提交</span>
+        </div>
+        <div class="subtitle">
+            填写歌曲信息 → 选择封面和音乐文件 → 一键提交到服务器
+        </div>
+
+        <div class="grid-2">
+            <!-- 左侧：表单 -->
+            <div>
+                <div class="form-group">
+                    <label>歌曲标题 <span class="required">*</span></label>
+                    <input type="text" id="songTitle" placeholder="例：Wake (3D高燃版)" />
+                </div>
+                <div class="form-group">
+                    <label>歌手/艺术家 <span class="optional">（可选）</span></label>
+                    <input type="text" id="artist" placeholder="例：VZEUS" />
+                </div>
+                <div class="form-group">
+                    <label>简短描述 <span class="optional">（可选）</span></label>
+                    <input type="text" id="desc" placeholder="例：高燃混音，震撼听觉" />
+                </div>
+                <div class="form-group">
+                    <label>搜索关键词 <span class="optional">（可选，空格分隔）</span></label>
+                    <input type="text" id="keywords" placeholder="例：3D高燃 混音 VZEUS" />
+                    <div class="hint">用于音乐栏目的搜索功能，自动包含标题和歌手</div>
+                </div>
+
+                <!-- 封面图片上传 -->
+                <div class="form-group">
+                    <label>封面图片 <span class="optional">（可选，不选则使用默认占位图）</span></label>
+                    <div class="file-upload-area" id="coverUploadArea">
+                        <i class="fas fa-image"></i>
+                        <div>点击选择封面图片</div>
+                        <div class="file-status" id="coverStatus">未选择文件</div>
+                        <input type="file" id="coverFile" accept="image/*" style="display:none;" />
+                    </div>
+                    <div class="hint">支持 JPG / PNG / AVIF / WebP，将保存到 <code>image/</code> 文件夹</div>
+                </div>
+
+                <!-- 音乐文件上传 -->
+                <div class="form-group">
+                    <label>音乐文件 <span class="required">*</span></label>
+                    <div class="file-upload-area" id="musicUploadArea">
+                        <i class="fas fa-music"></i>
+                        <div>点击选择音乐文件</div>
+                        <div class="file-status" id="musicStatus">未选择文件</div>
+                        <input type="file" id="musicFile" accept="audio/*,video/*" style="display:none;" />
+                    </div>
+                    <div class="hint">支持 MP3 / MP4 / WAV / FLAC 等，将保存到 <code>music/</code> 文件夹</div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="generateBtn"><i class="fas fa-magic"></i> 预览</button>
+                    <button class="btn btn-success" id="submitBtn"><i class="fas fa-upload"></i> 🚀 一键提交</button>
+                    <button class="btn btn-secondary" id="clearBtn"><i class="fas fa-undo-alt"></i> 清空</button>
+                </div>
+
+                <div class="upload-progress" id="uploadProgress">
+                    <div class="bar" id="progressBar"></div>
+                </div>
+
+                <div class="save-status" id="saveStatus"></div>
+
+                <div class="code-output" id="codeOutput">
+                    <button class="copy-btn" id="copyCodeBtn"><i class="far fa-copy"></i> 复制代码</button>
+                    <code id="codeContent"></code>
+                </div>
+            </div>
+
+            <!-- 右侧：预览 + 提示 -->
+            <div>
+                <div style="font-weight:600; margin-bottom:12px; font-size:1rem;">
+                    <i class="fas fa-eye" style="color:#4f8cf7;"></i> 预览效果
+                </div>
+                <div class="preview-box" id="previewBox">
+                    <div class="empty-msg">
+                        <i class="fas fa-image"></i>
+                        填写信息后点击「预览」
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <strong><i class="fas fa-lightbulb" style="color:#f59e0b;"></i> 使用说明</strong><br />
+                    1. 填写歌曲信息（标题必填）。<br />
+                    2. 选择封面图片（可选）和音乐文件（必填）。<br />
+                    3. 点击「预览」查看效果。<br />
+                    4. 点击「🚀 一键提交」将文件保存到服务器对应目录。<br />
+                    5. 文件会自动保存到 <code>image/</code> 和 <code>music/</code> 文件夹。<br />
+                    6. 生成的卡片代码会自动复制到剪贴板，粘贴到 <code>music.html</code> 即可。
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        (function() {
+            // ===== DOM 引用 =====
+            const titleInput = document.getElementById('songTitle');
+            const artistInput = document.getElementById('artist');
+            const descInput = document.getElementById('desc');
+            const keywordsInput = document.getElementById('keywords');
+            const coverFileInput = document.getElementById('coverFile');
+            const musicFileInput = document.getElementById('musicFile');
+            const coverUploadArea = document.getElementById('coverUploadArea');
+            const musicUploadArea = document.getElementById('musicUploadArea');
+            const coverStatus = document.getElementById('coverStatus');
+            const musicStatus = document.getElementById('musicStatus');
+            const generateBtn = document.getElementById('generateBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const copyCodeBtn = document.getElementById('copyCodeBtn');
+            const previewBox = document.getElementById('previewBox');
+            const codeOutput = document.getElementById('codeOutput');
+            const codeContent = document.getElementById('codeContent');
+            const toast = document.getElementById('toast');
+            const saveStatus = document.getElementById('saveStatus');
+            const uploadProgress = document.getElementById('uploadProgress');
+            const progressBar = document.getElementById('progressBar');
+
+            let selectedCover = null;
+            let selectedMusic = null;
+            let lastCardHtml = '';
+
+            // ===== Toast =====
+            function showToast(msg, isSuccess = true) {
+                toast.textContent = msg;
+                toast.classList.add('show');
+                clearTimeout(toast._timer);
+                toast._timer = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            // ===== 设置状态 =====
+            function setSaveStatus(msg, type) {
+                saveStatus.textContent = msg;
+                saveStatus.className = 'save-status ' + type;
+                saveStatus.style.display = 'block';
+            }
+
+            function clearStatus() {
+                saveStatus.style.display = 'none';
+            }
+
+            // ===== 文件上传交互 =====
+            coverUploadArea.addEventListener('click', () => coverFileInput.click());
+            musicUploadArea.addEventListener('click', () => musicFileInput.click());
+
+            coverFileInput.addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    selectedCover = this.files[0];
+                    coverStatus.innerHTML = `✅ <span class="file-name">${selectedCover.name}</span> <span class="file-size">(${(selectedCover.size/1024).toFixed(1)} KB)</span>`;
+                    coverUploadArea.style.borderColor = '#22c55e';
+                }
+            });
+
+            musicFileInput.addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    selectedMusic = this.files[0];
+                    musicStatus.innerHTML = `✅ <span class="file-name">${selectedMusic.name}</span> <span class="file-size">(${(selectedMusic.size/1024).toFixed(1)} KB)</span>`;
+                    musicUploadArea.style.borderColor = '#22c55e';
+                }
+            });
+
+            // ===== 生成卡片数据 =====
+            function generateCardData() {
+                const title = titleInput.value.trim();
+                const artist = artistInput.value.trim();
+                const desc = descInput.value.trim();
+                const keywords = keywordsInput.value.trim();
+
+                if (!title) {
+                    showToast('❌ 请填写歌曲标题', false);
+                    return null;
+                }
+
+                // 封面文件名：如果有上传则用上传的文件名，否则用默认占位图
+                let coverFileName = 'default.jpg';
+                if (selectedCover) {
+                    coverFileName = selectedCover.name;
+                }
+
+                // 音乐文件名
+                let musicFileName = '';
+                if (selectedMusic) {
+                    musicFileName = selectedMusic.name;
+                } else {
+                    showToast('❌ 请选择音乐文件', false);
+                    return null;
+                }
+
+                // 构建 data-title
+                let dataTitle = title;
+                if (artist) dataTitle += ' ' + artist;
+                if (keywords) dataTitle += ' ' + keywords;
+                dataTitle = dataTitle.replace(/\s+/g, ' ').trim();
+
+                let displayTitle = title;
+                if (artist) displayTitle += ' - ' + artist;
+
+                const descHtml = desc ? `<div class="item-desc">${desc}</div>` : '';
+
+                const cardHtml = `<div class="item-card" data-title="${dataTitle}">
+        <img src="image/${coverFileName}" alt="${title} 封面">
+        <div class="item-title">${displayTitle}</div>
+        ${descHtml}
+        <button class="download-btn" onclick="downloadMusic('music/${musicFileName}', '${musicFileName}')">
+            <i class="fas fa-download"></i> 下载
+        </button>
+    </div>`;
+
+                return {
+                    cardHtml,
+                    displayTitle,
+                    desc,
+                    coverFileName,
+                    musicFileName,
+                    dataTitle,
+                    title,
+                    artist,
+                    keywords,
+                    coverFile: selectedCover,
+                    musicFile: selectedMusic
+                };
+            }
+
+            // ===== 预览 =====
+            function handlePreview() {
+                const data = generateCardData();
+                if (!data) return;
+
+                // 预览封面（如果有选中的封面文件，用 FileReader 读取预览）
+                let coverSrc = 'image/' + data.coverFileName;
+                if (selectedCover) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewBox.innerHTML = buildPreviewHTML(data, e.target.result);
+                        previewBox.classList.add('has-preview');
+                    };
+                    reader.readAsDataURL(selectedCover);
+                } else {
+                    previewBox.innerHTML = buildPreviewHTML(data, coverSrc);
+                    previewBox.classList.add('has-preview');
+                }
+
+                lastCardHtml = data.cardHtml;
+                codeContent.textContent = data.cardHtml;
+                codeOutput.classList.add('show');
+                showToast('✅ 预览生成成功！');
+            }
+
+            function buildPreviewHTML(data, coverSrc) {
+                return `
+                    <div class="preview-card">
+                        <img class="pc-img" src="${coverSrc}" alt="封面预览" onerror="this.src='https://picsum.photos/seed/error/400/240'" />
+                        <div class="pc-title">${data.displayTitle}</div>
+                        ${data.desc ? `<div class="pc-desc">${data.desc}</div>` : ''}
+                        <span class="pc-btn"><i class="fas fa-download"></i> 下载</span>
+                        <div style="margin-top:10px; font-size:0.75rem; color:#94a3b8;">
+                            📁 image/${data.coverFileName} &nbsp;|&nbsp; 🎵 music/${data.musicFileName}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // ===== 一键提交 =====
+            async function handleSubmit() {
+                const data = generateCardData();
+                if (!data) return;
+
+                if (!selectedMusic) {
+                    showToast('❌ 请选择音乐文件', false);
+                    return;
+                }
+
+                // 检查浏览器是否支持 File System Access API
+                if (!('showDirectoryPicker' in window)) {
+                    // 降级方案：下载文件
+                    downloadFiles(data);
+                    return;
+                }
+
+                try {
+                    setSaveStatus('⏳ 正在选择服务器目录...', 'uploading');
+                    uploadProgress.classList.add('show');
+                    progressBar.style.width = '10%';
+
+                    // 选择根目录
+                    const dirHandle = await window.showDirectoryPicker();
+                    progressBar.style.width = '30%';
+                    setSaveStatus('⏳ 正在保存文件...', 'uploading');
+
+                    // 1. 保存封面到 image/
+                    if (selectedCover) {
+                        await saveFileToDir(dirHandle, 'image', selectedCover.name, selectedCover);
+                        progressBar.style.width = '50%';
+                    }
+
+                    // 2. 保存音乐到 music/
+                    if (selectedMusic) {
+                        await saveFileToDir(dirHandle, 'music', selectedMusic.name, selectedMusic);
+                        progressBar.style.width = '70%';
+                    }
+
+                    // 3. 保存卡片代码到 music-add-list/
+                    const cardFileName = data.title.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_').substring(0, 30) + '.html';
+                    const cardContent = buildCardFileContent(data);
+                    await saveTextToDir(dirHandle, 'music-add-list', cardFileName, cardContent);
+                    progressBar.style.width = '90%';
+
+                    // 4. 复制代码到剪贴板
+                    await navigator.clipboard.writeText(data.cardHtml);
+
+                    progressBar.style.width = '100%';
+                    setSaveStatus(`✅ 全部提交成功！\n📁 image/${data.coverFileName}\n📁 music/${data.musicFileName}\n📁 music-add-list/${cardFileName}\n📋 卡片代码已复制到剪贴板`, 'success');
+                    showToast('🎉 提交成功！代码已复制到剪贴板');
+
+                    setTimeout(() => {
+                        uploadProgress.classList.remove('show');
+                        progressBar.style.width = '0%';
+                    }, 3000);
+
+                } catch (err) {
+                    if (err.name === 'AbortError' || err.code === 20) {
+                        setSaveStatus('⚠️ 已取消选择文件夹', 'info');
+                    } else {
+                        console.error(err);
+                        setSaveStatus('❌ 提交失败: ' + err.message, 'error');
+                        // 降级下载
+                        downloadFiles(data);
+                    }
+                    uploadProgress.classList.remove('show');
+                    progressBar.style.width = '0%';
+                }
+            }
+
+            // ===== 保存文件到指定目录 =====
+            async function saveFileToDir(dirHandle, subDir, fileName, file) {
+                let targetDir;
+                try {
+                    targetDir = await dirHandle.getDirectoryHandle(subDir);
+                } catch (e) {
+                    targetDir = await dirHandle.getDirectoryHandle(subDir, { create: true });
+                }
+
+                const fileHandle = await targetDir.getFileHandle(fileName, { create: true });
+                const writable = await fileHandle.createWritable();
+                await writable.write(file);
+                await writable.close();
+            }
+
+            // ===== 保存文本到指定目录 =====
+            async function saveTextToDir(dirHandle, subDir, fileName, content) {
+                let targetDir;
+                try {
+                    targetDir = await dirHandle.getDirectoryHandle(subDir);
+                } catch (e) {
+                    targetDir = await dirHandle.getDirectoryHandle(subDir, { create: true });
+                }
+
+                const fileHandle = await targetDir.getFileHandle(fileName, { create: true });
+                const writable = await fileHandle.createWritable();
+                await writable.write(content);
+                await writable.close();
+            }
+
+            // ===== 构建卡片文件内容 =====
+            function buildCardFileContent(data) {
+                return `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>${data.title} - 音乐卡片</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4ff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .item-card { background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; padding: 20px; max-width: 320px; width: 100%; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+        .item-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 10px; background: #e2e8f0; }
+        .item-card .item-title { font-weight: 700; font-size: 1.1rem; margin: 12px 0 6px; }
+        .item-card .item-desc { color: #64748b; font-size: 0.9rem; margin-bottom: 12px; }
+        .download-btn { display: inline-block; background: #4f8cf7; color: #fff; border: none; padding: 6px 18px; border-radius: 30px; font-size: 0.85rem; font-weight: 500; cursor: pointer; font-family: inherit; }
+        .download-btn:hover { background: #3a6fd1; }
+    </style>
+</head>
+<body>
+    ${data.cardHtml}
+    <script>
+        function downloadMusic(fileUrl, fileName) {
+            var a = document.createElement('a');
+            a.href = fileUrl;
+            a.download = fileName || fileUrl.split('/').pop();
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    <\/script>
+</body>
+</html>`;
+            }
+
+            // ===== 降级方案：下载文件 =====
+            function downloadFiles(data) {
+                setSaveStatus('📥 正在准备下载文件...', 'info');
+
+                // 下载封面
+                if (selectedCover) {
+                    const url = URL.createObjectURL(selectedCover);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'image/' + selectedCover.name;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }
+
+                // 下载音乐
+                if (selectedMusic) {
+                    const url = URL.createObjectURL(selectedMusic);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'music/' + selectedMusic.name;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }
+
+                // 下载卡片代码
+                const cardFileName = data.title.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_').substring(0, 30) + '.html';
+                const cardContent = buildCardFileContent(data);
+                const blob = new Blob([cardContent], { type: 'text/html;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'music-add-list/' + cardFileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                // 复制代码到剪贴板
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(data.cardHtml).then(() => {
+                        showToast('📋 卡片代码已复制到剪贴板');
+                    }).catch(() => {});
+                }
+
+                setSaveStatus(`📥 文件已下载，请手动放入对应文件夹：
+    image/${data.coverFileName}
+    music/${data.musicFileName}
+    music-add-list/${cardFileName}
+    📋 卡片代码已复制到剪贴板`, 'info');
+                showToast('📥 文件已开始下载');
+            }
+
+            // ===== 清空 =====
+            function handleClear() {
+                titleInput.value = '';
+                artistInput.value = '';
+                descInput.value = '';
+                keywordsInput.value = '';
+
+                selectedCover = null;
+                selectedMusic = null;
+                coverFileInput.value = '';
+                musicFileInput.value = '';
+                coverStatus.innerHTML = '未选择文件';
+                musicStatus.innerHTML = '未选择文件';
+                coverUploadArea.style.borderColor = '#e2e8f0';
+                musicUploadArea.style.borderColor = '#e2e8f0';
+
+                previewBox.innerHTML = `
+                    <div class="empty-msg">
+                        <i class="fas fa-image"></i>
+                        填写信息后点击「预览」
+                    </div>
+                `;
+                previewBox.classList.remove('has-preview');
+                codeOutput.classList.remove('show');
+                lastCardHtml = '';
+                clearStatus();
+                showToast('🗑️ 已清空');
+            }
+
+            // ===== 复制代码 =====
+            function handleCopy() {
+                const text = codeContent.textContent;
+                if (!text) {
+                    showToast('❌ 没有可复制的内容', false);
+                    return;
+                }
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        showToast('📋 代码已复制到剪贴板！');
+                    }).catch(() => {
+                        fallbackCopy(text);
+                    });
+                } else {
+                    fallbackCopy(text);
+                }
+            }
+
+            function fallbackCopy(text) {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.left = '-9999px';
+                ta.style.top = '-9999px';
+                document.body.appendChild(ta);
+                ta.select();
+                try {
+                    document.execCommand('copy');
+                    showToast('📋 代码已复制到剪贴板！');
+                } catch (e) {
+                    showToast('❌ 复制失败，请手动选中复制', false);
+                }
+                document.body.removeChild(ta);
+            }
+
+            // ===== 事件绑定 =====
+            generateBtn.addEventListener('click', handlePreview);
+            submitBtn.addEventListener('click', handleSubmit);
+            clearBtn.addEventListener('click', handleClear);
+            copyCodeBtn.addEventListener('click', handleCopy);
+
+            // 回车触发生成
+            document.querySelectorAll('input').forEach(inp => {
+                inp.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handlePreview();
+                    }
+                });
+            });
+
+        })();
+    </script>
+
+</body>
+</html>

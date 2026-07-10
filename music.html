@@ -7,7 +7,7 @@
     <link rel="icon" href="image/C.png" type="image/png" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
-        /* ===== 完整样式（与之前一致） ===== */
+        /* ===== 完整样式 ===== */
         :root {
             --primary: #4f8cf7;
             --primary-dark: #3a6fd1;
@@ -47,10 +47,138 @@
         .theme-toggle { background:none; border:none; color:var(--text-light); font-size:1.2rem; cursor:pointer; padding:6px 10px; border-radius:8px; transition:background var(--transition), color var(--transition); }
         .theme-toggle:hover { background:var(--border); color:var(--text); }
         .mobile-menu-btn { display:none; background:none; border:none; color:var(--text); font-size:1.5rem; cursor:pointer; }
-        .page-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin:24px 0 20px; }
-        .page-header h2 { font-size:2rem; font-weight:700; }
-        .back-home { background:var(--card-bg); border:1px solid var(--border); padding:8px 20px; border-radius:30px; font-weight:500; color:var(--text-light); transition:all var(--transition); display:inline-flex; align-items:center; gap:6px; }
-        .back-home:hover { background:var(--primary); color:#fff; border-color:var(--primary); }
+
+        /* ===== 页面头部 ===== */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin: 24px 0 8px;
+        }
+        .page-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .back-home {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: all var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .back-home:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        /* ===== 投稿入口 ===== */
+        .submit-entry {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px 32px;
+            margin: 12px 0 28px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            transition: background var(--transition), border-color var(--transition), box-shadow var(--transition);
+        }
+        .submit-entry .submit-text {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            flex: 1;
+            min-width: 200px;
+        }
+        .submit-entry .submit-text .icon-wrap {
+            font-size: 2.2rem;
+            color: #f59e0b;
+            line-height: 1;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        .submit-entry .submit-text .text-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .submit-entry .submit-text .text-wrap .main-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .submit-entry .submit-text .text-wrap .main-title .highlight {
+            color: #f59e0b;
+        }
+        .submit-entry .submit-text .text-wrap .sub-desc {
+            font-size: 0.92rem;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+        .submit-entry .submit-text .text-wrap .sub-desc i {
+            color: var(--primary);
+            margin: 0 2px;
+        }
+        .submit-entry .submit-text .text-wrap .steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 20px;
+            margin-top: 4px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        .submit-entry .submit-text .text-wrap .steps .step {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .submit-entry .submit-text .text-wrap .steps .step .num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 0.65rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .submit-entry .submit-btn {
+            background: #22c55e;
+            color: #fff;
+            border: none;
+            padding: 12px 36px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: inherit;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .submit-entry .submit-btn:hover {
+            background: #16a34a;
+        }
+        .submit-entry .submit-btn i {
+            font-size: 1.1rem;
+        }
 
         /* ===== 搜索框 ===== */
         .search-box {
@@ -147,6 +275,7 @@
             grid-column: 1 / -1;
         }
 
+        /* ===== 页脚 ===== */
         .footer {
             border-top: 1px solid var(--border);
             padding: 28px 0;
@@ -156,20 +285,62 @@
             font-size: 0.9rem;
             background: var(--card-bg);
         }
+
+        /* ===== 响应式 ===== */
         @media (max-width:768px) {
             .nav-links { display:none; flex-direction:column; position:absolute; top:var(--nav-height); left:0; right:0; background:var(--card-bg); padding:20px 28px; gap:16px; border-bottom:1px solid var(--border); box-shadow:var(--shadow); }
             .nav-links.open { display:flex; }
             .mobile-menu-btn { display:block; }
-            .card-grid { grid-template-columns:1fr; }
+            .card-grid { grid-template-columns:1fr; justify-items:center; }
             .page-header { flex-direction:column; align-items:flex-start; }
             .navbar { padding:0 20px; }
+            .submit-entry {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 20px;
+            }
+            .submit-entry .submit-text {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .submit-entry .submit-text .text-wrap .steps {
+                justify-content: center;
+            }
+            .submit-entry .submit-btn {
+                justify-content: center;
+                padding: 12px 24px;
+                width: 100%;
+            }
         }
-        @media (max-width:480px) { .container { padding:0 16px; } }
-        ::-webkit-scrollbar { width:8px; } ::-webkit-scrollbar-track { background:var(--bg); } ::-webkit-scrollbar-thumb { background:var(--border); border-radius:8px; } ::-webkit-scrollbar-thumb:hover { background:var(--primary); }
+        @media (max-width:480px) {
+            .container { padding:0 16px; }
+            .submit-entry {
+                padding: 16px;
+            }
+            .submit-entry .submit-text .icon-wrap {
+                font-size: 1.8rem;
+            }
+            .submit-entry .submit-text .text-wrap .main-title {
+                font-size: 1rem;
+            }
+            .submit-entry .submit-text .text-wrap .steps {
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+            }
+        }
+
+        /* ===== 滚动条 ===== */
+        ::-webkit-scrollbar { width:8px; }
+        ::-webkit-scrollbar-track { background:var(--bg); }
+        ::-webkit-scrollbar-thumb { background:var(--border); border-radius:8px; }
+        ::-webkit-scrollbar-thumb:hover { background:var(--primary); }
     </style>
 </head>
 <body>
-    <!-- 导航栏 -->
+
+    <!-- ===== 导航栏 ===== -->
     <nav class="navbar" id="navbar">
         <a href="index.html" class="logo">CCX<span>.</span></a>
         <ul class="nav-links" id="navLinks">
@@ -184,20 +355,44 @@
         <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
     </nav>
 
-    <!-- 主体 -->
+    <!-- ===== 主体 ===== -->
     <main class="container">
         <div class="page-header">
             <h2><i class="fas fa-music" style="color:var(--primary);"></i> 音乐下载</h2>
             <a href="index.html" class="back-home"><i class="fas fa-arrow-left"></i> 返回主页</a>
         </div>
 
-        <!-- ===== 搜索框 ===== -->
+        <!-- ===== 📮 投稿入口 ===== -->
+        <div class="submit-entry">
+            <div class="submit-text">
+                <div class="icon-wrap">🎧</div>
+                <div class="text-wrap">
+                    <div class="main-title">
+                        🎵 欢迎投稿音乐 <span class="highlight"></span>
+                    </div>
+                    <div class="sub-desc">
+                        把音乐按要求填好，生成代码后就能发给我了 📨 &nbsp;·&nbsp; 分享你喜欢的旋律，让更多人听见 🌟
+                    </div>
+                    <div class="steps">
+                        <span class="step"><span class="num">1</span> 填写歌曲信息</span>
+                        <span class="step"><span class="num">2</span> 上传封面 &amp; 音频</span>
+                        <span class="step"><span class="num">3</span> 发送代码</span>
+                        <span class="step" style="color:var(--primary);"><i class="fas fa-check-circle"></i> 就这么简单！</span>
+                    </div>
+                </div>
+            </div>
+            <button class="submit-btn" onclick="window.open('music-add.html', '_blank')">
+                <i class="fas fa-plus-circle"></i> 去添加音乐
+            </button>
+        </div>
+
+        <!-- ===== 🔍 搜索框 ===== -->
         <div class="search-box">
             <input type="text" id="searchMusic" placeholder="🎵 输入歌曲名或歌手名搜索..." />
             <div class="search-stats" id="searchStats">共 <span id="totalCount">0</span> 首歌曲</div>
         </div>
 
-        <!-- ===== 音乐列表 ===== -->
+        <!-- ===== 🎶 音乐列表 ===== -->
         <div class="card-grid" id="musicGrid">
             <!-- 音乐卡片 1：Wake -->
             <div class="item-card" data-title="Wake 3D高燃版 VZEUS 音频 高燃 混音">
@@ -208,15 +403,18 @@
                     <i class="fas fa-download"></i> 下载
                 </button>
             </div>
-            <!-- 示例卡片 2：可添加更多 -->
+
+            <!-- 音乐卡片 2：III -->
             <div class="item-card" data-title="III 经典">
                 <img src="image/III.avif" alt="III封面">
                 <div class="item-title">III</div>
-                <div class="item-desc">“ 2 分 58 秒开始，相见恨晚！” </div>
+                <div class="item-desc">“ 2 分 58 秒开始，相见恨晚！”</div>
                 <button class="download-btn" onclick="downloadMusic('music/III.mp4', 'III.mp4')">
                     <i class="fas fa-download"></i> 下载
                 </button>
             </div>
+
+            <!-- 音乐卡片 3：Lucky girl -->
             <div class="item-card" data-title="Lucky girl Luckygirl Lucky Lucky+gogirl lucky_girl luckygirl">
                 <img src="image/lucky_girl.avif" alt="Lucky girl 封面">
                 <div class="item-title">Lucky girl</div>
@@ -225,12 +423,13 @@
                     <i class="fas fa-download"></i> 下载
                 </button>
             </div>
+
             <!-- 无结果提示 -->
             <div class="no-result" id="noResult">😅 没有找到匹配的歌曲</div>
         </div>
     </main>
 
-    <!-- 页脚 -->
+    <!-- ===== 页脚 ===== -->
     <footer class="footer">
         <div class="container">
             <p>© 2026 CCX · 用 <span style="color:#f472b6;">♥</span> 书写 · 保持好奇</p>
@@ -244,21 +443,48 @@
             const themeToggle = document.getElementById('themeToggle');
             const icon = themeToggle.querySelector('i');
             let currentTheme = localStorage.getItem('blog-theme') || 'light';
-            function setTheme(t) { document.documentElement.setAttribute('data-theme', t); icon.className = t === 'dark' ? 'fas fa-sun' : 'fas fa-moon'; localStorage.setItem('blog-theme', t); currentTheme = t; }
+            function setTheme(t) {
+                document.documentElement.setAttribute('data-theme', t);
+                icon.className = t === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+                localStorage.setItem('blog-theme', t);
+                currentTheme = t;
+            }
             setTheme(currentTheme);
-            themeToggle.addEventListener('click', function() { setTheme(currentTheme === 'light' ? 'dark' : 'light'); });
+            themeToggle.addEventListener('click', function() {
+                setTheme(currentTheme === 'light' ? 'dark' : 'light');
+            });
 
             const mobileBtn = document.getElementById('mobileMenuBtn');
             const navLinks = document.getElementById('navLinks');
-            mobileBtn.addEventListener('click', function() { navLinks.classList.toggle('open'); const i=this.querySelector('i'); i.classList.toggle('fa-bars'); i.classList.toggle('fa-times'); });
-            navLinks.querySelectorAll('a').forEach(l => { l.addEventListener('click', function() { if(window.innerWidth<=768){ navLinks.classList.remove('open'); const i=mobileBtn.querySelector('i'); i.classList.add('fa-bars'); i.classList.remove('fa-times'); } }); });
+            mobileBtn.addEventListener('click', function() {
+                navLinks.classList.toggle('open');
+                const i = this.querySelector('i');
+                i.classList.toggle('fa-bars');
+                i.classList.toggle('fa-times');
+            });
+            navLinks.querySelectorAll('a').forEach(l => {
+                l.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        navLinks.classList.remove('open');
+                        const i = mobileBtn.querySelector('i');
+                        i.classList.add('fa-bars');
+                        i.classList.remove('fa-times');
+                    }
+                });
+            });
+
             const navbar = document.getElementById('navbar');
-            window.addEventListener('scroll', function() { navbar.style.boxShadow = window.scrollY > 20 ? '0 4px 20px rgba(0,0,0,0.06)' : 'none'; }, { passive: true });
+            window.addEventListener('scroll', function() {
+                navbar.style.boxShadow = window.scrollY > 20 ? '0 4px 20px rgba(0,0,0,0.06)' : 'none';
+            }, { passive: true });
         })();
 
         // ===== 下载函数 =====
         function downloadMusic(fileUrl, fileName) {
-            if (!fileName) { const parts = fileUrl.split('/'); fileName = parts[parts.length - 1]; }
+            if (!fileName) {
+                const parts = fileUrl.split('/');
+                fileName = parts[parts.length - 1];
+            }
             var xhr = new XMLHttpRequest();
             xhr.open('GET', fileUrl, true);
             xhr.responseType = 'blob';
@@ -271,7 +497,9 @@
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
-                    setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
+                    setTimeout(function() {
+                        URL.revokeObjectURL(a.href);
+                    }, 1000);
                 } else {
                     alert('下载失败，请检查文件是否存在。\n将打开文件，请右键另存为。');
                     window.open(fileUrl, '_blank');
@@ -291,7 +519,6 @@
             const totalSpan = document.getElementById('totalCount');
             const noResult = document.getElementById('noResult');
 
-            // 更新总数
             totalSpan.textContent = musicCards.length;
 
             searchInput.addEventListener('input', function() {
@@ -300,7 +527,6 @@
 
                 musicCards.forEach(card => {
                     const title = (card.dataset.title || '').toLowerCase();
-                    // 也搜索描述文本（可选）
                     const desc = (card.querySelector('.item-desc')?.textContent || '').toLowerCase();
                     const match = keyword === '' || title.includes(keyword) || desc.includes(keyword);
                     if (match) {
@@ -311,14 +537,12 @@
                     }
                 });
 
-                // 显示/隐藏“无结果”提示
                 if (visibleCount === 0 && keyword !== '') {
                     noResult.style.display = 'block';
                 } else {
                     noResult.style.display = 'none';
                 }
 
-                // 更新统计
                 const stats = document.getElementById('searchStats');
                 if (keyword === '') {
                     stats.textContent = `共 ${musicCards.length} 首歌曲`;
