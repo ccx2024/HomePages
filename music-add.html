@@ -68,6 +68,10 @@
             border-radius: 4px;
             font-size: 0.85rem;
         }
+        .subtitle .gitee-link {
+            color: #e74c3c;
+            font-weight: 600;
+        }
 
         .grid-2 {
             display: grid;
@@ -201,13 +205,6 @@
         .btn-success:hover {
             background: #16a34a;
         }
-        .btn-warning {
-            background: #f59e0b;
-            color: #fff;
-        }
-        .btn-warning:hover {
-            background: #d97706;
-        }
         .btn-danger {
             background: #ef4444;
             color: #fff;
@@ -285,6 +282,11 @@
             border: none;
             cursor: default;
         }
+        .preview-card .pc-path {
+            margin-top: 10px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
 
         .code-output {
             margin-top: 20px;
@@ -361,6 +363,10 @@
             padding: 1px 6px;
             border-radius: 3px;
             font-size: 0.8rem;
+        }
+        .tip-box .gitee-link {
+            color: #e74c3c;
+            font-weight: 600;
         }
 
         .save-status {
@@ -441,10 +447,14 @@
     <div class="container">
         <div class="header">
             <h1><i class="fas fa-music"></i> 音乐添加工具</h1>
-            <span class="badge"><i class="fas fa-upload"></i> 一键提交</span>
+            <span class="badge"><i class="fas fa-upload"></i> 提交到 Gitee</span>
         </div>
         <div class="subtitle">
-            填写歌曲信息 → 选择封面和音乐文件 → 一键提交到服务器
+            填写歌曲信息 → 选择封面和音乐文件 → 提交到 Gitee 仓库
+            <br />
+            <span style="font-size:0.85rem; color:#94a3b8;">
+                🌐 仓库地址：<span class="gitee-link">https://gitee.com/caocx-2012/home-pages</span>
+            </span>
         </div>
 
         <div class="grid-2">
@@ -468,7 +478,6 @@
                     <div class="hint">用于音乐栏目的搜索功能，自动包含标题和歌手</div>
                 </div>
 
-                <!-- 封面图片上传 -->
                 <div class="form-group">
                     <label>封面图片 <span class="optional">（可选，不选则使用默认占位图）</span></label>
                     <div class="file-upload-area" id="coverUploadArea">
@@ -477,10 +486,9 @@
                         <div class="file-status" id="coverStatus">未选择文件</div>
                         <input type="file" id="coverFile" accept="image/*" style="display:none;" />
                     </div>
-                    <div class="hint">支持 JPG / PNG / AVIF / WebP，将保存到 <code>image/</code> 文件夹</div>
+                    <div class="hint">保存到 Gitee 仓库 <code>image/</code> 文件夹</div>
                 </div>
 
-                <!-- 音乐文件上传 -->
                 <div class="form-group">
                     <label>音乐文件 <span class="required">*</span></label>
                     <div class="file-upload-area" id="musicUploadArea">
@@ -489,12 +497,12 @@
                         <div class="file-status" id="musicStatus">未选择文件</div>
                         <input type="file" id="musicFile" accept="audio/*,video/*" style="display:none;" />
                     </div>
-                    <div class="hint">支持 MP3 / MP4 / WAV / FLAC 等，将保存到 <code>music/</code> 文件夹</div>
+                    <div class="hint">保存到 Gitee 仓库 <code>music/</code> 文件夹</div>
                 </div>
 
                 <div class="btn-group">
                     <button class="btn btn-primary" id="generateBtn"><i class="fas fa-magic"></i> 预览</button>
-                    <button class="btn btn-success" id="submitBtn"><i class="fas fa-upload"></i> 🚀 一键提交</button>
+                    <button class="btn btn-success" id="submitBtn"><i class="fas fa-upload"></i> 🚀 提交到 Gitee</button>
                     <button class="btn btn-secondary" id="clearBtn"><i class="fas fa-undo-alt"></i> 清空</button>
                 </div>
 
@@ -527,9 +535,14 @@
                     1. 填写歌曲信息（标题必填）。<br />
                     2. 选择封面图片（可选）和音乐文件（必填）。<br />
                     3. 点击「预览」查看效果。<br />
-                    4. 点击「🚀 一键提交」将文件保存到服务器对应目录。<br />
-                    5. 文件会自动保存到 <code>image/</code> 和 <code>music/</code> 文件夹。<br />
-                    6. 生成的卡片代码会自动复制到剪贴板，粘贴到 <code>music.html</code> 即可。
+                    4. 点击「🚀 提交到 Gitee」下载所有文件。<br />
+                    5. 将下载的文件上传到 Gitee 仓库对应文件夹：<br />
+                    &nbsp;&nbsp;&nbsp;📁 <code>image/</code> → 封面图片<br />
+                    &nbsp;&nbsp;&nbsp;📁 <code>music/</code> → 音乐文件<br />
+                    &nbsp;&nbsp;&nbsp;📁 <code>music-add-list/</code> → 卡片代码<br />
+                    <span style="color:#e74c3c; font-weight:600;">
+                        🌐 https://gitee.com/caocx-2012/home-pages
+                    </span>
                 </div>
             </div>
         </div>
@@ -562,6 +575,7 @@
             const uploadProgress = document.getElementById('uploadProgress');
             const progressBar = document.getElementById('progressBar');
 
+            const GITEE_REPO = 'https://gitee.com/caocx-2012/home-pages';
             let selectedCover = null;
             let selectedMusic = null;
             let lastCardHtml = '';
@@ -619,13 +633,11 @@
                     return null;
                 }
 
-                // 封面文件名：如果有上传则用上传的文件名，否则用默认占位图
                 let coverFileName = 'default.jpg';
                 if (selectedCover) {
                     coverFileName = selectedCover.name;
                 }
 
-                // 音乐文件名
                 let musicFileName = '';
                 if (selectedMusic) {
                     musicFileName = selectedMusic.name;
@@ -634,7 +646,6 @@
                     return null;
                 }
 
-                // 构建 data-title
                 let dataTitle = title;
                 if (artist) dataTitle += ' ' + artist;
                 if (keywords) dataTitle += ' ' + keywords;
@@ -674,7 +685,6 @@
                 const data = generateCardData();
                 if (!data) return;
 
-                // 预览封面（如果有选中的封面文件，用 FileReader 读取预览）
                 let coverSrc = 'image/' + data.coverFileName;
                 if (selectedCover) {
                     const reader = new FileReader();
@@ -701,15 +711,15 @@
                         <div class="pc-title">${data.displayTitle}</div>
                         ${data.desc ? `<div class="pc-desc">${data.desc}</div>` : ''}
                         <span class="pc-btn"><i class="fas fa-download"></i> 下载</span>
-                        <div style="margin-top:10px; font-size:0.75rem; color:#94a3b8;">
+                        <div class="pc-path">
                             📁 image/${data.coverFileName} &nbsp;|&nbsp; 🎵 music/${data.musicFileName}
                         </div>
                     </div>
                 `;
             }
 
-            // ===== 一键提交 =====
-            async function handleSubmit() {
+            // ===== 提交到 Gitee（下载文件） =====
+            function handleSubmit() {
                 const data = generateCardData();
                 if (!data) return;
 
@@ -718,95 +728,72 @@
                     return;
                 }
 
-                // 检查浏览器是否支持 File System Access API
-                if (!('showDirectoryPicker' in window)) {
-                    // 降级方案：下载文件
-                    downloadFiles(data);
-                    return;
+                setSaveStatus('📦 正在准备文件，请稍候...', 'uploading');
+                uploadProgress.classList.add('show');
+                progressBar.style.width = '20%';
+
+                // 1. 下载封面
+                if (selectedCover) {
+                    const url = URL.createObjectURL(selectedCover);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = selectedCover.name;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
                 }
+                progressBar.style.width = '40%';
 
-                try {
-                    setSaveStatus('⏳ 正在选择服务器目录...', 'uploading');
-                    uploadProgress.classList.add('show');
-                    progressBar.style.width = '10%';
+                // 2. 下载音乐
+                if (selectedMusic) {
+                    const url = URL.createObjectURL(selectedMusic);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = selectedMusic.name;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }
+                progressBar.style.width = '60%';
 
-                    // 选择根目录
-                    const dirHandle = await window.showDirectoryPicker();
-                    progressBar.style.width = '30%';
-                    setSaveStatus('⏳ 正在保存文件...', 'uploading');
+                // 3. 下载卡片代码
+                const cardFileName = data.title.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_').substring(0, 30) + '.html';
+                const cardContent = buildCardFileContent(data);
+                const blob = new Blob([cardContent], { type: 'text/html;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = cardFileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                progressBar.style.width = '80%';
 
-                    // 1. 保存封面到 image/
-                    if (selectedCover) {
-                        await saveFileToDir(dirHandle, 'image', selectedCover.name, selectedCover);
-                        progressBar.style.width = '50%';
-                    }
+                // 4. 复制代码到剪贴板
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(data.cardHtml).then(() => {
+                        showToast('📋 卡片代码已复制到剪贴板');
+                    }).catch(() => {});
+                }
+                progressBar.style.width = '100%';
 
-                    // 2. 保存音乐到 music/
-                    if (selectedMusic) {
-                        await saveFileToDir(dirHandle, 'music', selectedMusic.name, selectedMusic);
-                        progressBar.style.width = '70%';
-                    }
+                setSaveStatus(`✅ 文件已准备完毕！
+        📁 请上传到 Gitee 仓库对应文件夹：
+        📁 image/${data.coverFileName}
+        📁 music/${data.musicFileName}
+        📁 music-add-list/${cardFileName}
 
-                    // 3. 保存卡片代码到 music-add-list/
-                    const cardFileName = data.title.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_').substring(0, 30) + '.html';
-                    const cardContent = buildCardFileContent(data);
-                    await saveTextToDir(dirHandle, 'music-add-list', cardFileName, cardContent);
-                    progressBar.style.width = '90%';
+        🌐 ${GITEE_REPO}
+        📋 卡片代码已复制到剪贴板`, 'success');
+                showToast('🎉 文件已下载，请上传到 Gitee');
 
-                    // 4. 复制代码到剪贴板
-                    await navigator.clipboard.writeText(data.cardHtml);
-
-                    progressBar.style.width = '100%';
-                    setSaveStatus(`✅ 全部提交成功！\n📁 image/${data.coverFileName}\n📁 music/${data.musicFileName}\n📁 music-add-list/${cardFileName}\n📋 卡片代码已复制到剪贴板`, 'success');
-                    showToast('🎉 提交成功！代码已复制到剪贴板');
-
-                    setTimeout(() => {
-                        uploadProgress.classList.remove('show');
-                        progressBar.style.width = '0%';
-                    }, 3000);
-
-                } catch (err) {
-                    if (err.name === 'AbortError' || err.code === 20) {
-                        setSaveStatus('⚠️ 已取消选择文件夹', 'info');
-                    } else {
-                        console.error(err);
-                        setSaveStatus('❌ 提交失败: ' + err.message, 'error');
-                        // 降级下载
-                        downloadFiles(data);
-                    }
+                setTimeout(() => {
                     uploadProgress.classList.remove('show');
                     progressBar.style.width = '0%';
-                }
-            }
-
-            // ===== 保存文件到指定目录 =====
-            async function saveFileToDir(dirHandle, subDir, fileName, file) {
-                let targetDir;
-                try {
-                    targetDir = await dirHandle.getDirectoryHandle(subDir);
-                } catch (e) {
-                    targetDir = await dirHandle.getDirectoryHandle(subDir, { create: true });
-                }
-
-                const fileHandle = await targetDir.getFileHandle(fileName, { create: true });
-                const writable = await fileHandle.createWritable();
-                await writable.write(file);
-                await writable.close();
-            }
-
-            // ===== 保存文本到指定目录 =====
-            async function saveTextToDir(dirHandle, subDir, fileName, content) {
-                let targetDir;
-                try {
-                    targetDir = await dirHandle.getDirectoryHandle(subDir);
-                } catch (e) {
-                    targetDir = await dirHandle.getDirectoryHandle(subDir, { create: true });
-                }
-
-                const fileHandle = await targetDir.getFileHandle(fileName, { create: true });
-                const writable = await fileHandle.createWritable();
-                await writable.write(content);
-                await writable.close();
+                }, 5000);
             }
 
             // ===== 构建卡片文件内容 =====
@@ -841,62 +828,6 @@
     <\/script>
 </body>
 </html>`;
-            }
-
-            // ===== 降级方案：下载文件 =====
-            function downloadFiles(data) {
-                setSaveStatus('📥 正在准备下载文件...', 'info');
-
-                // 下载封面
-                if (selectedCover) {
-                    const url = URL.createObjectURL(selectedCover);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'image/' + selectedCover.name;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }
-
-                // 下载音乐
-                if (selectedMusic) {
-                    const url = URL.createObjectURL(selectedMusic);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'music/' + selectedMusic.name;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }
-
-                // 下载卡片代码
-                const cardFileName = data.title.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_').substring(0, 30) + '.html';
-                const cardContent = buildCardFileContent(data);
-                const blob = new Blob([cardContent], { type: 'text/html;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'music-add-list/' + cardFileName;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-
-                // 复制代码到剪贴板
-                if (navigator.clipboard) {
-                    navigator.clipboard.writeText(data.cardHtml).then(() => {
-                        showToast('📋 卡片代码已复制到剪贴板');
-                    }).catch(() => {});
-                }
-
-                setSaveStatus(`📥 文件已下载，请手动放入对应文件夹：
-    image/${data.coverFileName}
-    music/${data.musicFileName}
-    music-add-list/${cardFileName}
-    📋 卡片代码已复制到剪贴板`, 'info');
-                showToast('📥 文件已开始下载');
             }
 
             // ===== 清空 =====
