@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CCX的个人博客 - 代码专栏</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ===== 全局样式 ===== */
+        :root {
+            --primary: #4f8cf7;
+            --primary-dark: #3a6fd1;
+            --bg: #f0f4ff;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            --radius: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Segoe UI', system-ui, sans-serif;
+            --nav-height: 68px;
+        }
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #e2e8f0;
+            --text-light: #94a3b8;
+            --border: #334155;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            transition: background var(--transition), color var(--transition);
+            padding-top: var(--nav-height);
+        }
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color var(--transition);
+        }
+        a:hover {
+            color: var(--primary-dark);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===== 导航栏 ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-height);
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+            background: rgba(var(--card-bg-rgb, 255, 255, 255), 0.85);
+            transition: background var(--transition), border-color var(--transition);
+        }
+        .navbar {
+            --card-bg-rgb: 255, 255, 255;
+        }
+        [data-theme="dark"] .navbar {
+            --card-bg-rgb: 30, 41, 59;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+        .logo span {
+            color: var(--primary);
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-light);
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width var(--transition);
+        }
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text);
+        }
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: background var(--transition), color var(--transition);
+        }
+        .theme-toggle:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* ===== 页面头部 ===== */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin: 24px 0 12px;
+        }
+        .page-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .page-header h2 i {
+            color: var(--primary);
+            margin-right: 8px;
+        }
+        .back-home {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: all var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .back-home:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        /* ===== 专栏介绍文字 ===== */
+        .column-intro {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 24px 32px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+            font-size: 1.05rem;
+            color: var(--text);
+            line-height: 1.9;
+        }
+        .column-intro i {
+            color: var(--primary);
+            margin-right: 4px;
+        }
+        .column-intro .highlight-blue {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* ===== 双栏布局：动态节选 + 标签云 ===== */
+        .info-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            margin-bottom: 36px;
+        }
+        .info-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 22px 28px;
+            box-shadow: var(--shadow);
+            transition: all var(--transition);
+        }
+        .info-card:hover {
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+        }
+        .info-card .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .info-card .card-title i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        .info-card .card-title .title-line {
+            flex: 1;
+            height: 2px;
+            background: var(--border);
+        }
+
+        /* ---- 动态节选列表 ---- */
+        .update-list {
+            list-style: none;
+        }
+        .update-list li {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+        .update-list li:last-child {
+            border-bottom: none;
+        }
+        .update-list .update-date {
+            color: var(--text-light);
+            font-size: 0.78rem;
+            font-weight: 500;
+            white-space: nowrap;
+            background: var(--bg);
+            padding: 0 10px;
+            border-radius: 12px;
+            line-height: 1.8;
+        }
+        .update-list .update-link {
+            color: var(--text);
+            transition: color var(--transition);
+        }
+        .update-list .update-link:hover {
+            color: var(--primary);
+        }
+        .update-list .update-tag {
+            font-size: 0.6rem;
+            background: rgba(79, 140, 247, 0.12);
+            color: var(--primary);
+            padding: 0 10px;
+            border-radius: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            line-height: 1.8;
+        }
+
+        /* ---- 标签云 ---- */
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 14px;
+            align-items: center;
+        }
+        .tag-cloud .tag-item {
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+            cursor: pointer;
+        }
+        .tag-cloud .tag-item:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .tag-cloud .tag-item.sz-lg { font-size: 1.1rem; padding: 6px 22px; }
+        .tag-cloud .tag-item.sz-md { font-size: 0.95rem; padding: 5px 18px; }
+        .tag-cloud .tag-item.sz-sm { font-size: 0.75rem; padding: 3px 12px; }
+        .tag-cloud .tag-item.sz-xs { font-size: 0.65rem; padding: 2px 10px; }
+
+        /* ===== 横排图标网格 ===== */
+        .icon-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 36px 40px;
+            margin-bottom: 20px;
+            justify-content: flex-start;
+        }
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 32px 24px;
+            min-width: 190px;
+            flex: 0 0 auto;
+            transition: all var(--transition);
+            box-shadow: var(--shadow);
+            text-align: center;
+            cursor: pointer;
+        }
+        .icon-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.10);
+            border-color: var(--primary);
+        }
+        .icon-item .ii-icon {
+            font-size: 3.6rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        .icon-item .ii-icon img {
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+            border-radius: 8px;
+            display: block;
+        }
+        .icon-item .ii-name {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        .icon-item .ii-desc {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+        .icon-item .ii-badge {
+            font-size: 0.75rem;
+            background: rgba(79, 140, 247, 0.12);
+            color: var(--primary);
+            padding: 4px 18px;
+            border-radius: 20px;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+        .icon-item a {
+            display: contents;
+            color: inherit;
+        }
+
+        /* ===== 页脚 ===== */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 28px 0;
+            margin-top: 40px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            background: var(--card-bg);
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 992px) {
+            .info-row {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: var(--nav-height);
+                left: 0;
+                right: 0;
+                background: var(--card-bg);
+                padding: 20px 28px;
+                gap: 16px;
+                border-bottom: 1px solid var(--border);
+                box-shadow: var(--shadow);
+            }
+            .nav-links.open {
+                display: flex;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .navbar {
+                padding: 0 20px;
+            }
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .column-intro {
+                padding: 18px 20px;
+                font-size: 0.95rem;
+            }
+            .info-card {
+                padding: 18px 20px;
+            }
+            .update-list li {
+                flex-wrap: wrap;
+                gap: 6px 12px;
+            }
+            .icon-grid {
+                gap: 24px 28px;
+                justify-content: center;
+            }
+            .icon-item {
+                min-width: 150px;
+                padding: 20px 20px 18px;
+            }
+            .icon-item .ii-icon {
+                font-size: 2.8rem;
+            }
+            .icon-item .ii-name {
+                font-size: 1.1rem;
+            }
+            .icon-item .ii-desc {
+                font-size: 0.8rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+            .column-intro {
+                padding: 14px 16px;
+                font-size: 0.9rem;
+            }
+            .info-card {
+                padding: 14px 16px;
+            }
+            .icon-item {
+                min-width: 120px;
+                padding: 16px 14px;
+            }
+            .icon-item .ii-icon {
+                font-size: 2.4rem;
+            }
+            .icon-item .ii-name {
+                font-size: 1rem;
+            }
+            .icon-item .ii-desc {
+                font-size: 0.7rem;
+            }
+            .tag-cloud .tag-item.sz-lg { font-size: 0.95rem; }
+            .tag-cloud .tag-item.sz-md { font-size: 0.85rem; }
+            .tag-cloud .tag-item.sz-sm { font-size: 0.7rem; }
+            .tag-cloud .tag-item.sz-xs { font-size: 0.6rem; }
+        }
+
+        /* ===== 滚动条 ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 导航栏 ===== -->
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="logo">CCX<span>.</span></a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="music.html">音乐</a></li>
+            <li><a href="game.html">游戏</a></li>
+            <li><a href="code.html" class="active">代码</a></li>
+            <li><a href="aviation.html">航空</a></li>
+            <li><a href="article.html">文章</a></li>
+            <li>
+                <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </li>
+        </ul>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- ===== 主体 ===== -->
+    <main class="container">
+
+        <!-- 页面头部 -->
+        <div class="page-header">
+            <h2><i class="fas fa-code"></i> 代码专栏</h2>
+            <a href="index.html" class="back-home"><i class="fas fa-arrow-left"></i> 返回主页</a>
+        </div>
+
+        <!-- ===== 介绍文字 ===== -->
+        <div class="column-intro">
+            <p>
+                <i class="fas fa-quote-left"></i> 
+                本人平时在家是单片机发烧友，偶尔写点小游戏，作为学生在校内学习信奥，为了支持自己的游戏服务器运行还学习网络。
+                <span class="highlight-blue">我将在本专栏中介绍学习成果，提供一些软件的下载，方便大家快速入门！！！</span>
+                <i class="fas fa-quote-right"></i>
+            </p>
+        </div>
+
+        <!-- ===== 双栏：动态节选 + 标签云 ===== -->
+        <div class="info-row">
+
+            <!-- 左侧：动态节选 -->
+            <div class="info-card">
+                <div class="card-title">
+                    <i class="fas fa-pen-fancy"></i> 动态节选
+                    <span class="title-line"></span>
+                </div>
+                <ul class="update-list">
+                    <li>
+                        <span class="update-date">07-10</span>
+                        <a href="#" class="update-link">STM32 + ESP8266 物联网通信实战</a>
+                        <span class="update-tag">单片机</span>
+                    </li>
+                    <li>
+                        <span class="update-date">07-08</span>
+                        <a href="#" class="update-link">树状数组与线段树：OI 必备数据结构</a>
+                        <span class="update-tag">OI</span>
+                    </li>
+                    <li>
+                        <span class="update-date">07-05</span>
+                        <a href="#" class="update-link">Cloudflare Tunnel 内网穿透完全指南</a>
+                        <span class="update-tag">网络</span>
+                    </li>
+                    <li>
+                        <span class="update-date">07-01</span>
+                        <a href="#" class="update-link">设计模式在 Spring Boot 中的应用</a>
+                        <span class="update-tag">软件</span>
+                    </li>
+                    <li>
+                        <span class="update-date">06-28</span>
+                        <a href="#" class="update-link">从零搭建个人博客：技术选型与部署</a>
+                        <span class="update-tag">软件</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 右侧：技术标签云 -->
+            <div class="info-card">
+                <div class="card-title">
+                    <i class="fas fa-tags"></i> 技术标签云
+                    <span class="title-line"></span>
+                </div>
+                <div class="tag-cloud">
+                    <span class="tag-item sz-lg">C</span>
+                    <span class="tag-item sz-lg">C++</span>
+                    <span class="tag-item sz-lg">Python</span>
+                    <span class="tag-item sz-md">Java</span>
+                    <span class="tag-item sz-md">STM32</span>
+                    <span class="tag-item sz-md">Linux</span>
+                    <span class="tag-item sz-md">算法</span>
+                    <span class="tag-item sz-md">数据结构</span>
+                    <span class="tag-item sz-sm">网络协议</span>
+                    <span class="tag-item sz-sm">Docker</span>
+                    <span class="tag-item sz-sm">Git</span>
+                    <span class="tag-item sz-sm">FPGA</span>
+                    <span class="tag-item sz-xs">嵌入式</span>
+                    <span class="tag-item sz-xs">RTOS</span>
+                    <span class="tag-item sz-xs">TCP/IP</span>
+                    <span class="tag-item sz-xs">OpenCV</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===== 专栏图标网格 ===== -->
+        <div class="icon-grid">
+
+            <!-- 单片机 -->
+            <a href="code-branch/code-mcu.html" class="icon-item">
+                <span class="ii-icon"><i class="fas fa-microchip"></i></span>
+                <span class="ii-name">单片机</span>
+                <span class="ii-desc">嵌入式 · 硬件</span>
+                <span class="ii-badge">了解更多 →</span>
+            </a>
+
+            <!-- 信息学奥赛 -->
+            <a href="code-branch/code-oi.html" class="icon-item">
+                <span class="ii-icon"><i class="fas fa-trophy"></i></span>
+                <span class="ii-name">信息学奥赛</span>
+                <span class="ii-desc">算法 · 竞赛</span>
+                <span class="ii-badge">了解更多 →</span>
+            </a>
+
+            <!-- 网络 -->
+            <a href="code-branch/code-network.html" class="icon-item">
+                <span class="ii-icon"><i class="fab fa-cloudflare"></i></span>
+                <span class="ii-name">网络</span>
+                <span class="ii-desc">协议 · 安全 · 加速</span>
+                <span class="ii-badge">了解更多 →</span>
+            </a>
+
+            <!-- 软件 -->
+            <a href="code-branch/code-software.html" class="icon-item">
+                <span class="ii-icon"><i class="fas fa-laptop-code"></i></span>
+                <span class="ii-name">软件</span>
+                <span class="ii-desc">工程 · 架构 · 质量</span>
+                <span class="ii-badge">了解更多 →</span>
+            </a>
+
+        </div>
+
+    </main>
+
+    <!-- ===== 页脚 ===== -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 CCX · 用 <span style="color:#f472b6;">♥</span> 书写 · 保持好奇</p>
+            <p style="margin-top:4px; font-size:0.8rem;"><i class="fas fa-code"></i> 简洁 · 优雅 · 有温度</p>
+        </div>
+    </footer>
+
+    <script>
+        // ===== 主题切换 & 菜单 =====
+        (function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const icon = themeToggle.querySelector('i');
+            let currentTheme = localStorage.getItem('blog-theme') || 'light';
+
+            function setTheme(t) {
+                document.documentElement.setAttribute('data-theme', t);
+                icon.className = t === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+                localStorage.setItem('blog-theme', t);
+                currentTheme = t;
+            }
+            setTheme(currentTheme);
+
+            themeToggle.addEventListener('click', function() {
+                setTheme(currentTheme === 'light' ? 'dark' : 'light');
+            });
+
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            const navLinks = document.getElementById('navLinks');
+            mobileBtn.addEventListener('click', function() {
+                navLinks.classList.toggle('open');
+                const i = this.querySelector('i');
+                i.classList.toggle('fa-bars');
+                i.classList.toggle('fa-times');
+            });
+
+            navLinks.querySelectorAll('a').forEach(l => {
+                l.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        navLinks.classList.remove('open');
+                        const i = mobileBtn.querySelector('i');
+                        i.classList.add('fa-bars');
+                        i.classList.remove('fa-times');
+                    }
+                });
+            });
+
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', function() {
+                navbar.style.boxShadow = window.scrollY > 20 ? '0 4px 20px rgba(0,0,0,0.06)' : 'none';
+            }, { passive: true });
+        })();
+    </script>
+
+</body>
+</html>
