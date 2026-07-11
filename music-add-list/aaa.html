@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8" /><title>aaa - 音乐卡片</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+<style>body{font-family:'Segoe UI',sans-serif;background:#f0f4ff;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:20px;}
+.item-card{background:#fff;border-radius:16px;border:1px solid #e2e8f0;padding:20px;max-width:320px;width:100%;box-shadow:0 8px 24px rgba(0,0,0,0.06);}
+.item-card img{width:100%;height:160px;object-fit:cover;border-radius:10px;background:#e2e8f0;}
+.item-card .item-title{font-weight:700;font-size:1.1rem;margin:12px 0 6px;}
+.item-card .item-desc{color:#64748b;font-size:0.9rem;margin-bottom:12px;}
+.download-btn{display:inline-block;background:#4f8cf7;color:#fff;border:none;padding:6px 18px;border-radius:30px;font-size:0.85rem;font-weight:500;cursor:pointer;font-family:inherit;}
+.download-btn:hover{background:#3a6fd1;}
+</style></head>
+<body>
+<div class="item-card" data-title="aaa">
+        <img src="image/default.jpg" alt="aaa 封面">
+        <div class="item-title">aaa</div>
+        
+        <button class="download-btn" onclick="downloadMusic('music/[Phonk] RAVE_音频.mp4', '[Phonk] RAVE_音频.mp4')">
+            <i class="fas fa-download"></i> 下载
+        </button>
+    </div>
+<script>
+function downloadMusic(fileUrl,fileName){var a=document.createElement('a');a.href=fileUrl;a.download=fileName||fileUrl.split('/').pop();document.body.appendChild(a);a.click();document.body.removeChild(a);}
+</script>
+</body>
+</html>
