@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>音乐添加工具 - 提交到 Gitee</title>
+    <title>音乐投稿工具</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -12,9 +12,9 @@
         .header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 6px; }
         .header h1 { font-size: 1.8rem; font-weight: 700; display: flex; align-items: center; gap: 12px; }
         .header h1 i { color: #4f8cf7; }
-        .header .badge { background: #e2e8f0; color: #475569; padding: 4px 14px; border-radius: 30px; font-size: 0.8rem; font-weight: 500; }
-        .subtitle { color: #64748b; margin-bottom: 28px; border-bottom: 1px solid #e2e8f0; padding-bottom: 14px; font-size: 0.95rem; }
-        .subtitle .gitee-link { color: #e74c3c; font-weight: 600; }
+        .back-btn { background: #e2e8f0; color: #1e293b; padding: 8px 20px; border-radius: 30px; text-decoration: none; font-weight: 500; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .back-btn:hover { background: #cbd5e1; }
+        .subtitle { color: #64748b; margin-bottom: 28px; border-bottom: 1px solid #e2e8f0; padding-bottom: 14px; font-size: 1rem; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
         @media (max-width:850px){ .grid-2 { grid-template-columns:1fr; } .container { padding:20px; } }
 
@@ -25,7 +25,6 @@
         .form-group input { width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 0.95rem; background: #fafbfc; transition: border 0.2s; font-family: inherit; }
         .form-group input:focus { outline: none; border-color: #4f8cf7; background: #fff; box-shadow: 0 0 0 3px rgba(79,140,247,0.12); }
         .form-group .hint { font-size: 0.78rem; color: #94a3b8; margin-top: 3px; }
-        .form-group .hint code { background: #f1f5f9; padding: 1px 6px; border-radius: 3px; font-size: 0.75rem; }
         .form-group .file-upload-area { border: 2px dashed #e2e8f0; border-radius: 10px; padding: 16px; text-align: center; cursor: pointer; transition: border-color 0.3s; background: #fafbfc; }
         .form-group .file-upload-area:hover { border-color: #4f8cf7; background: #f0f4ff; }
         .form-group .file-upload-area .file-status { font-size: 0.85rem; color: #64748b; margin-top: 4px; }
@@ -52,16 +51,10 @@
         .preview-card .pc-btn { display: inline-block; background: #4f8cf7; color: #fff; padding: 5px 18px; border-radius: 30px; font-size: 0.8rem; font-weight: 500; border: none; cursor: default; }
         .preview-card .pc-path { margin-top: 10px; font-size: 0.75rem; color: #94a3b8; }
 
-        .code-output { margin-top: 20px; background: #1e293b; color: #e2e8f0; padding: 16px 20px; border-radius: 12px; font-family: monospace; font-size: 0.82rem; overflow-x: auto; white-space: pre-wrap; word-break: break-all; display: none; position: relative; line-height: 1.6; }
-        .code-output.show { display: block; }
-        .code-output .copy-btn { position: absolute; top: 10px; right: 14px; background: #334155; color: #fff; border: none; padding: 4px 16px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; font-family: inherit; }
-        .code-output .copy-btn:hover { background: #475569; }
-
         .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1e293b; color: #fff; padding: 12px 32px; border-radius: 40px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.2); opacity: 0; transition: all 0.3s ease; pointer-events: none; font-size: 0.95rem; z-index: 999; }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
         .tip-box { margin-top: 16px; background: #f1f5f9; padding: 16px 20px; border-radius: 12px; font-size: 0.9rem; color: #475569; line-height: 1.7; }
         .tip-box strong { color: #1e293b; }
-        .tip-box code { background: #e2e8f0; padding: 1px 6px; border-radius: 3px; font-size: 0.8rem; }
         .save-status { margin-top: 12px; padding: 10px 16px; border-radius: 10px; font-size: 0.9rem; display: none; }
         .save-status.success { display: block; background: #dcfce7; color: #166534; border: 1px solid #86efac; }
         .save-status.error { display: block; background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
@@ -72,10 +65,12 @@
         .upload-progress .bar { height: 100%; background: #4f8cf7; width: 0%; transition: width 0.3s; border-radius: 3px; }
         .upload-progress.show { display: block; }
 
-        .token-input { background: #fef9e7; border: 1px solid #f59e0b; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; }
-        .token-input label { font-weight: 600; display: block; margin-bottom: 4px; color: #92400e; }
-        .token-input input { width: 100%; padding: 8px 12px; border: 1px solid #f59e0b; border-radius: 6px; font-size: 0.9rem; background: #fff; }
-        .token-input .hint { font-size: 0.75rem; color: #92400e; margin-top: 4px; }
+        /* 授权码输入 */
+        .auth-input { background: #f8fafc; border-radius: 12px; padding: 16px 18px; margin-bottom: 16px; border: 1px solid #e2e8f0; }
+        .auth-input label { font-weight: 600; display: block; margin-bottom: 4px; font-size: 0.9rem; }
+        .auth-input input { width: 100%; padding: 8px 14px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; background: #fff; font-family: inherit; }
+        .auth-input input:focus { outline: none; border-color: #4f8cf7; box-shadow: 0 0 0 3px rgba(79,140,247,0.12); }
+        .auth-input .hint { font-size: 0.75rem; color: #94a3b8; margin-top: 4px; }
 
         @media (max-width:480px){ .container { padding:16px; } .header h1 { font-size:1.4rem; } .btn-group .btn { flex:1; justify-content:center; padding:10px 16px; font-size:0.85rem; } .toast { font-size:0.85rem; padding:10px 20px; white-space:normal; max-width:90%; } }
     </style>
@@ -83,24 +78,22 @@
 <body>
 <div class="container">
     <div class="header">
-        <h1><i class="fas fa-music"></i> 音乐添加工具</h1>
-        <span class="badge"><i class="fas fa-cloud-upload-alt"></i> 汇总到 music-add-list.html</span>
+        <h1><i class="fas fa-headphones"></i> 音乐投稿</h1>
+        <a href="music.html" class="back-btn"><i class="fas fa-arrow-left"></i> 返回音乐专栏</a>
     </div>
     <div class="subtitle">
-        填写歌曲信息 → 选择封面和音乐文件 → 提交后自动追加到根目录 <code>music-add-list.html</code><br />
-        <span style="font-size:0.85rem; color:#94a3b8;">
-            🌐 仓库地址：<span class="gitee-link">https://gitee.com/caocx-2012/home-pages</span>（分支：main）
-        </span>
-    </div>
-
-    <div class="token-input">
-        <label><i class="fas fa-key"></i> Gitee 私人令牌（首次使用需填入）</label>
-        <input type="password" id="giteeToken" placeholder="请输入您的 Gitee Personal Access Token" />
-        <div class="hint">令牌保存在本地浏览器，仅用于 Gitee API 调用。</div>
+        填写歌曲信息，选择封面和音乐文件，点击提交即可。
     </div>
 
     <div class="grid-2">
         <div>
+            <!-- 授权码输入（所有用户可见） -->
+            <div class="auth-input">
+                <label><i class="fas fa-key"></i> 提交授权码 <span class="required">*</span></label>
+                <input type="password" id="giteeToken" placeholder="请输入管理员提供的授权码" />
+                <div class="hint">授权码由管理员提供，用于验证提交权限。</div>
+            </div>
+
             <div class="form-group">
                 <label>歌曲标题 <span class="required">*</span></label>
                 <input type="text" id="songTitle" placeholder="例：Wake (3D高燃版)" />
@@ -116,7 +109,7 @@
             <div class="form-group">
                 <label>搜索关键词 <span class="optional">（可选，空格分隔）</span></label>
                 <input type="text" id="keywords" placeholder="例：3D高燃 混音 VZEUS" />
-                <div class="hint">用于音乐栏目的搜索功能，自动包含标题和歌手</div>
+                <div class="hint">用于搜索功能，自动包含标题和歌手</div>
             </div>
 
             <div class="form-group">
@@ -127,7 +120,6 @@
                     <div class="file-status" id="coverStatus">未选择文件</div>
                     <input type="file" id="coverFile" accept="image/*" style="display:none;" />
                 </div>
-                <div class="hint">上传到 Gitee 仓库 <code>image/</code> 文件夹</div>
             </div>
 
             <div class="form-group">
@@ -138,12 +130,11 @@
                     <div class="file-status" id="musicStatus">未选择文件</div>
                     <input type="file" id="musicFile" accept="audio/*,video/*" style="display:none;" />
                 </div>
-                <div class="hint">上传到 Gitee 仓库 <code>music/</code> 文件夹</div>
             </div>
 
             <div class="btn-group">
-                <button class="btn btn-primary" id="generateBtn"><i class="fas fa-magic"></i> 预览</button>
-                <button class="btn btn-success" id="submitBtn"><i class="fas fa-upload"></i> 🚀 提交到 Gitee</button>
+                <button class="btn btn-primary" id="generateBtn"><i class="fas fa-eye"></i> 预览</button>
+                <button class="btn btn-success" id="submitBtn"><i class="fas fa-upload"></i> 提交</button>
                 <button class="btn btn-secondary" id="clearBtn"><i class="fas fa-undo-alt"></i> 清空</button>
             </div>
 
@@ -151,11 +142,6 @@
                 <div class="bar" id="progressBar"></div>
             </div>
             <div class="save-status" id="saveStatus"></div>
-
-            <div class="code-output" id="codeOutput">
-                <button class="copy-btn" id="copyCodeBtn"><i class="far fa-copy"></i> 复制代码</button>
-                <code id="codeContent"></code>
-            </div>
         </div>
 
         <div>
@@ -168,9 +154,8 @@
                 1. 填写歌曲信息（标题必填）。<br />
                 2. 选择封面（可选）和音乐文件（必填）。<br />
                 3. 点击「预览」确认效果。<br />
-                4. 点击「🚀 提交到 Gitee」直接上传。<br />
-                5. 所有卡片代码将汇总到根目录 <code>music-add-list.html</code> 中。<br />
-                6. 打开该文件，复制对应卡片代码粘贴到 <code>music.html</code> 的 <code>.card-grid</code> 中。
+                4. 点击「提交」完成投稿。<br />
+                5. 投稿后卡片代码会自动整理，管理员会将其添加到音乐列表中。
             </div>
         </div>
     </div>
@@ -194,10 +179,7 @@
     const generateBtn = document.getElementById('generateBtn');
     const submitBtn = document.getElementById('submitBtn');
     const clearBtn = document.getElementById('clearBtn');
-    const copyCodeBtn = document.getElementById('copyCodeBtn');
     const previewBox = document.getElementById('previewBox');
-    const codeOutput = document.getElementById('codeOutput');
-    const codeContent = document.getElementById('codeContent');
     const toast = document.getElementById('toast');
     const saveStatus = document.getElementById('saveStatus');
     const uploadProgress = document.getElementById('uploadProgress');
@@ -291,10 +273,7 @@
             </div>
         `;
         previewBox.classList.add('has-preview');
-        lastCardHtml = data.cardHtml;
-        codeContent.textContent = data.cardHtml;
-        codeOutput.classList.add('show');
-        showToast('✅ 预览生成成功！');
+        showToast('✅ 预览已生成');
     }
 
     // ---------- Gitee API 辅助函数 ----------
@@ -307,7 +286,7 @@
             return null;
         }
         if (!resp.ok) {
-            throw new Error('获取文件信息失败: ' + (await resp.text()));
+            throw new Error('获取文件信息失败');
         }
         return await resp.json();
     }
@@ -378,12 +357,12 @@
 
         const token = tokenInput.value.trim();
         if (!token) {
-            setSaveStatus('❌ 未配置 Gitee Token，请在页面顶部填入。', 'error');
-            showToast('❌ 缺少 Gitee Token');
+            setSaveStatus('❌ 请输入提交授权码', 'error');
+            showToast('❌ 请输入授权码');
             return;
         }
 
-        setSaveStatus('⏳ 正在提交到 Gitee...', 'uploading');
+        setSaveStatus('⏳ 正在提交...', 'uploading');
         uploadProgress.classList.add('show');
         progressBar.style.width = '10%';
 
@@ -397,7 +376,7 @@
             await uploadFile(selectedMusic, 'music/' + selectedMusic.name, token, '添加音乐文件');
             progressBar.style.width = '50%';
 
-            // 3. 处理汇总文件 music-add-list.html
+            // 3. 处理汇总文件
             let fileInfo = null;
             let existingContent = '';
             let sha = null;
@@ -405,26 +384,21 @@
             try {
                 fileInfo = await getFileInfo(CARDS_FILE, token);
                 if (fileInfo && fileInfo.content) {
-                    // 尝试解码
                     try {
-                        // 去除可能存在的空格/换行
                         const raw = fileInfo.content.replace(/\s/g, '');
                         existingContent = atob(raw);
                         sha = fileInfo.sha;
                     } catch (decodeErr) {
                         console.warn('解码现有文件失败，将作为空文件处理', decodeErr);
-                        // 解码失败则当作文件不存在，重新创建
                         fileInfo = null;
                         sha = null;
                         existingContent = '';
                     }
                 }
             } catch (err) {
-                // 文件不存在或其他错误，忽略
                 console.warn('获取文件信息失败，将创建新文件', err);
             }
 
-            // 构建新卡片块
             const now = new Date();
             const dateStr = now.getFullYear() + '-' +
                 String(now.getMonth()+1).padStart(2,'0') + '-' +
@@ -436,11 +410,9 @@
 
             let newContent = existingContent + newCardBlock;
             if (!fileInfo) {
-                // 文件不存在或解码失败，创建新文件并添加头部注释
-                newContent = `<!-- ===== 音乐卡片汇总文件 ===== -->\n<!-- 每个卡片以注释分隔，复制需要的卡片到 music.html 的 .card-grid 中 -->\n${newCardBlock}`;
+                newContent = `<!-- ===== 音乐卡片汇总文件 ===== -->\n<!-- 每个卡片以注释分隔，复制需要的卡片到音乐页面 -->\n${newCardBlock}`;
             }
 
-            // 上传（如果 sha 存在则更新，否则创建）
             await createOrUpdateFile(CARDS_FILE, newContent, token, '追加音乐卡片', sha);
             progressBar.style.width = '80%';
 
@@ -450,16 +422,12 @@
             }
             progressBar.style.width = '100%';
 
-            setSaveStatus(`✅ 提交成功！
-        📁 image/${data.coverFileName}
-        📁 music/${data.musicFileName}
-        📄 ${CARDS_FILE} 已追加新卡片
-        📋 卡片代码已复制到剪贴板`, 'success');
-            showToast('🎉 已成功追加到 music-add-list.html！');
+            setSaveStatus(`✅ 提交成功！\n📋 卡片代码已复制到剪贴板，管理员会尽快处理。`, 'success');
+            showToast('🎉 提交成功！');
 
         } catch (err) {
             setSaveStatus('❌ 提交失败: ' + err.message, 'error');
-            showToast('❌ 提交失败，请检查 Token 或网络');
+            showToast('❌ 提交失败，请检查授权码或网络');
             console.error(err);
         } finally {
             setTimeout(() => {
@@ -477,34 +445,13 @@
         coverUploadArea.style.borderColor = '#e2e8f0'; musicUploadArea.style.borderColor = '#e2e8f0';
         previewBox.innerHTML = `<div class="empty-msg"><i class="fas fa-image"></i>填写信息后点击「预览」</div>`;
         previewBox.classList.remove('has-preview');
-        codeOutput.classList.remove('show');
         clearStatus();
         showToast('🗑️ 已清空');
-    }
-
-    function handleCopy() {
-        const text = codeContent.textContent;
-        if (!text) return showToast('❌ 没有可复制的内容', false);
-        if (navigator.clipboard) {
-            navigator.clipboard.writeText(text).then(() => showToast('📋 已复制！')).catch(() => fallbackCopy(text));
-        } else {
-            fallbackCopy(text);
-        }
-    }
-    function fallbackCopy(text) {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed'; ta.style.left = '-9999px';
-        document.body.appendChild(ta);
-        ta.select();
-        try { document.execCommand('copy'); showToast('📋 已复制！'); } catch(e) { showToast('❌ 复制失败', false); }
-        document.body.removeChild(ta);
     }
 
     generateBtn.addEventListener('click', handlePreview);
     submitBtn.addEventListener('click', handleSubmit);
     clearBtn.addEventListener('click', handleClear);
-    copyCodeBtn.addEventListener('click', handleCopy);
     document.querySelectorAll('input').forEach(inp => {
         inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); handlePreview(); } });
     });
