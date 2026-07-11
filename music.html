@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -22,6 +23,7 @@
             --font: 'Segoe UI', system-ui, sans-serif;
             --nav-height: 68px;
         }
+
         [data-theme="dark"] {
             --bg: #0f172a;
             --card-bg: #1e293b;
@@ -30,23 +32,129 @@
             --border: #334155;
             --shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
         }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family: var(--font); background: var(--bg); color: var(--text); line-height:1.7; transition: background var(--transition), color var(--transition); padding-top: var(--nav-height); }
-        a { color: var(--primary); text-decoration: none; }
-        .container { max-width:1200px; margin:0 auto; padding:0 24px; }
-        .navbar { position:fixed; top:0; left:0; right:0; height:var(--nav-height); background:var(--card-bg); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 32px; z-index:1000; backdrop-filter:blur(12px); background:rgba(var(--card-bg-rgb,255,255,255),0.85); transition: background var(--transition), border-color var(--transition); }
-        .navbar { --card-bg-rgb:255,255,255; }
-        [data-theme="dark"] .navbar { --card-bg-rgb:30,41,59; }
-        .logo { font-size:1.5rem; font-weight:700; color:var(--text); letter-spacing:-0.5px; }
-        .logo span { color:var(--primary); }
-        .nav-links { display:flex; align-items:center; gap:28px; list-style:none; }
-        .nav-links a { color:var(--text-light); font-weight:500; font-size:0.95rem; position:relative; }
-        .nav-links a::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:2px; background:var(--primary); transition:width var(--transition); }
-        .nav-links a:hover::after, .nav-links a.active::after { width:100%; }
-        .nav-links a:hover, .nav-links a.active { color:var(--text); }
-        .theme-toggle { background:none; border:none; color:var(--text-light); font-size:1.2rem; cursor:pointer; padding:6px 10px; border-radius:8px; transition:background var(--transition), color var(--transition); }
-        .theme-toggle:hover { background:var(--border); color:var(--text); }
-        .mobile-menu-btn { display:none; background:none; border:none; color:var(--text); font-size:1.5rem; cursor:pointer; }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            transition: background var(--transition), color var(--transition);
+            padding-top: var(--nav-height);
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-height);
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+            background: rgba(var(--card-bg-rgb, 255, 255, 255), 0.85);
+            transition: background var(--transition), border-color var(--transition);
+        }
+
+        .navbar {
+            --card-bg-rgb: 255, 255, 255;
+        }
+
+        [data-theme="dark"] .navbar {
+            --card-bg-rgb: 30, 41, 59;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width var(--transition);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: background var(--transition), color var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
 
         /* ===== 页面头部 ===== */
         .page-header {
@@ -57,10 +165,12 @@
             gap: 16px;
             margin: 24px 0 8px;
         }
+
         .page-header h2 {
             font-size: 2rem;
             font-weight: 700;
         }
+
         .back-home {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -73,6 +183,7 @@
             align-items: center;
             gap: 6px;
         }
+
         .back-home:hover {
             background: var(--primary);
             color: #fff;
@@ -94,6 +205,7 @@
             gap: 20px;
             transition: background var(--transition), border-color var(--transition), box-shadow var(--transition);
         }
+
         .submit-entry .submit-text {
             display: flex;
             align-items: flex-start;
@@ -101,6 +213,7 @@
             flex: 1;
             min-width: 200px;
         }
+
         .submit-entry .submit-text .icon-wrap {
             font-size: 2.2rem;
             color: #f59e0b;
@@ -108,28 +221,34 @@
             margin-top: 2px;
             flex-shrink: 0;
         }
+
         .submit-entry .submit-text .text-wrap {
             display: flex;
             flex-direction: column;
             gap: 2px;
         }
+
         .submit-entry .submit-text .text-wrap .main-title {
             font-size: 1.15rem;
             font-weight: 700;
             color: var(--text);
         }
+
         .submit-entry .submit-text .text-wrap .main-title .highlight {
             color: #f59e0b;
         }
+
         .submit-entry .submit-text .text-wrap .sub-desc {
             font-size: 0.92rem;
             color: var(--text-light);
             line-height: 1.6;
         }
+
         .submit-entry .submit-text .text-wrap .sub-desc i {
             color: var(--primary);
             margin: 0 2px;
         }
+
         .submit-entry .submit-text .text-wrap .steps {
             display: flex;
             flex-wrap: wrap;
@@ -138,11 +257,13 @@
             font-size: 0.85rem;
             color: var(--text-light);
         }
+
         .submit-entry .submit-text .text-wrap .steps .step {
             display: flex;
             align-items: center;
             gap: 4px;
         }
+
         .submit-entry .submit-text .text-wrap .steps .step .num {
             display: inline-flex;
             align-items: center;
@@ -156,6 +277,7 @@
             font-weight: 700;
             flex-shrink: 0;
         }
+
         .submit-entry .submit-btn {
             background: #22c55e;
             color: #fff;
@@ -173,9 +295,11 @@
             white-space: nowrap;
             flex-shrink: 0;
         }
+
         .submit-entry .submit-btn:hover {
             background: #16a34a;
         }
+
         .submit-entry .submit-btn i {
             font-size: 1.1rem;
         }
@@ -184,6 +308,7 @@
         .search-box {
             margin-bottom: 24px;
         }
+
         .search-box input {
             width: 100%;
             padding: 12px 20px;
@@ -196,13 +321,16 @@
             outline: none;
             font-family: inherit;
         }
+
         .search-box input:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(79, 140, 247, 0.2);
         }
+
         .search-box input::placeholder {
             color: var(--text-light);
         }
+
         .search-stats {
             font-size: 0.85rem;
             color: var(--text-light);
@@ -218,6 +346,7 @@
             margin: 0 0 40px;
             justify-items: center;
         }
+
         .item-card {
             background: var(--card-bg);
             border-radius: var(--radius);
@@ -228,10 +357,12 @@
             max-width: 320px;
             width: 100%;
         }
+
         .item-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
         }
+
         .item-card img {
             width: 100%;
             height: 160px;
@@ -239,16 +370,19 @@
             border-radius: 10px;
             background: var(--bg);
         }
+
         .item-card .item-title {
             font-weight: 700;
             font-size: 1.1rem;
             margin: 12px 0 6px;
         }
+
         .item-card .item-desc {
             color: var(--text-light);
             font-size: 0.9rem;
             margin-bottom: 12px;
         }
+
         .download-btn {
             display: inline-block;
             background: var(--primary);
@@ -262,10 +396,12 @@
             transition: background var(--transition);
             font-family: inherit;
         }
+
         .download-btn:hover {
             background: var(--primary-dark);
             color: #fff;
         }
+
         .no-result {
             text-align: center;
             padding: 40px 0;
@@ -288,42 +424,82 @@
 
         /* ===== 响应式 ===== */
         @media (max-width:768px) {
-            .nav-links { display:none; flex-direction:column; position:absolute; top:var(--nav-height); left:0; right:0; background:var(--card-bg); padding:20px 28px; gap:16px; border-bottom:1px solid var(--border); box-shadow:var(--shadow); }
-            .nav-links.open { display:flex; }
-            .mobile-menu-btn { display:block; }
-            .card-grid { grid-template-columns:1fr; justify-items:center; }
-            .page-header { flex-direction:column; align-items:flex-start; }
-            .navbar { padding:0 20px; }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: var(--nav-height);
+                left: 0;
+                right: 0;
+                background: var(--card-bg);
+                padding: 20px 28px;
+                gap: 16px;
+                border-bottom: 1px solid var(--border);
+                box-shadow: var(--shadow);
+            }
+
+            .nav-links.open {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+                justify-items: center;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .navbar {
+                padding: 0 20px;
+            }
+
             .submit-entry {
                 flex-direction: column;
                 align-items: stretch;
                 padding: 20px;
             }
+
             .submit-entry .submit-text {
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
             }
+
             .submit-entry .submit-text .text-wrap .steps {
                 justify-content: center;
             }
+
             .submit-entry .submit-btn {
                 justify-content: center;
                 padding: 12px 24px;
                 width: 100%;
             }
         }
+
         @media (max-width:480px) {
-            .container { padding:0 16px; }
+            .container {
+                padding: 0 16px;
+            }
+
             .submit-entry {
                 padding: 16px;
             }
+
             .submit-entry .submit-text .icon-wrap {
                 font-size: 1.8rem;
             }
+
             .submit-entry .submit-text .text-wrap .main-title {
                 font-size: 1rem;
             }
+
             .submit-entry .submit-text .text-wrap .steps {
                 flex-direction: column;
                 align-items: center;
@@ -332,12 +508,25 @@
         }
 
         /* ===== 滚动条 ===== */
-        ::-webkit-scrollbar { width:8px; }
-        ::-webkit-scrollbar-track { background:var(--bg); }
-        ::-webkit-scrollbar-thumb { background:var(--border); border-radius:8px; }
-        ::-webkit-scrollbar-thumb:hover { background:var(--primary); }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 8px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
     </style>
 </head>
+
 <body>
 
     <!-- ===== 导航栏 ===== -->
@@ -377,7 +566,8 @@
                         <span class="step"><span class="num">1</span> 填写歌曲信息</span>
                         <span class="step"><span class="num">2</span> 上传封面 &amp; 音频</span>
                         <span class="step"><span class="num">3</span> 发送代码</span>
-                        <span class="step" style="color:var(--primary);"><i class="fas fa-check-circle"></i> 就这么简单！</span>
+                        <span class="step" style="color:var(--primary);"><i class="fas fa-check-circle"></i>
+                            就这么简单！</span>
                     </div>
                 </div>
             </div>
@@ -419,11 +609,29 @@
                 <img src="image/lucky_girl.avif" alt="Lucky girl 封面">
                 <div class="item-title">Lucky girl</div>
                 <div class="item-desc">“你是北纬67度以北的雪.”</div>
-                <button class="download-btn" onclick="downloadMusic('music/“你是北纬67度以北的雪.”_《Lucky+go girl》_音频.mp4', '“你是北纬67度以北的雪.”_《Lucky+go girl》_音频.mp4')">
+                <button class="download-btn"
+                    onclick="downloadMusic('music/“你是北纬67度以北的雪.”_《Lucky+go girl》_音频.mp4', '“你是北纬67度以北的雪.”_《Lucky+go girl》_音频.mp4')">
                     <i class="fas fa-download"></i> 下载
                 </button>
             </div>
-
+            <!-- rave 2026-07-11 11:36 -->
+            <div class="item-card" data-title="rave">
+                <img src="image/rave.avif" alt="rave 封面">
+                <div class="item-title">rave</div>
+                <button class="download-btn"
+                    onclick="downloadMusic('music/[Phonk] RAVE_é³é¢.mp4', '[Phonk] RAVE_é³é¢.mp4')">
+                    <i class="fas fa-download"></i> 下载
+                </button>
+            </div>
+            <!-- 歌曲：归零 | 添加时间：2026-07-11 11:39 -->
+            <div class="item-card" data-title="归零">
+                <img src="image/归零.avif" alt="归零 封面">
+                <div class="item-title">归零</div>
+                <button class="download-btn"
+                    onclick="downloadMusic('music/“大梦一场”｜《归零》(作者：魔鬼花园)_音频.mp4', '“大梦一场”｜《归零》(作者：魔鬼花园)_音频.mp4')">
+                    <i class="fas fa-download"></i> 下载
+                </button>
+            </div>
             <!-- 无结果提示 -->
             <div class="no-result" id="noResult">😅 没有找到匹配的歌曲</div>
         </div>
@@ -439,7 +647,7 @@
 
     <script>
         // ===== 主题切换 & 菜单 =====
-        (function() {
+        (function () {
             const themeToggle = document.getElementById('themeToggle');
             const icon = themeToggle.querySelector('i');
             let currentTheme = localStorage.getItem('blog-theme') || 'light';
@@ -450,20 +658,20 @@
                 currentTheme = t;
             }
             setTheme(currentTheme);
-            themeToggle.addEventListener('click', function() {
+            themeToggle.addEventListener('click', function () {
                 setTheme(currentTheme === 'light' ? 'dark' : 'light');
             });
 
             const mobileBtn = document.getElementById('mobileMenuBtn');
             const navLinks = document.getElementById('navLinks');
-            mobileBtn.addEventListener('click', function() {
+            mobileBtn.addEventListener('click', function () {
                 navLinks.classList.toggle('open');
                 const i = this.querySelector('i');
                 i.classList.toggle('fa-bars');
                 i.classList.toggle('fa-times');
             });
             navLinks.querySelectorAll('a').forEach(l => {
-                l.addEventListener('click', function() {
+                l.addEventListener('click', function () {
                     if (window.innerWidth <= 768) {
                         navLinks.classList.remove('open');
                         const i = mobileBtn.querySelector('i');
@@ -474,7 +682,7 @@
             });
 
             const navbar = document.getElementById('navbar');
-            window.addEventListener('scroll', function() {
+            window.addEventListener('scroll', function () {
                 navbar.style.boxShadow = window.scrollY > 20 ? '0 4px 20px rgba(0,0,0,0.06)' : 'none';
             }, { passive: true });
         })();
@@ -488,7 +696,7 @@
             var xhr = new XMLHttpRequest();
             xhr.open('GET', fileUrl, true);
             xhr.responseType = 'blob';
-            xhr.onload = function() {
+            xhr.onload = function () {
                 if (xhr.status === 200) {
                     var blob = xhr.response;
                     var a = document.createElement('a');
@@ -497,7 +705,7 @@
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
-                    setTimeout(function() {
+                    setTimeout(function () {
                         URL.revokeObjectURL(a.href);
                     }, 1000);
                 } else {
@@ -505,7 +713,7 @@
                     window.open(fileUrl, '_blank');
                 }
             };
-            xhr.onerror = function() {
+            xhr.onerror = function () {
                 alert('读取失败，将打开文件，请右键另存为。');
                 window.open(fileUrl, '_blank');
             };
@@ -513,7 +721,7 @@
         }
 
         // ===== 🎵 音乐搜索功能 =====
-        (function() {
+        (function () {
             const searchInput = document.getElementById('searchMusic');
             const musicCards = document.querySelectorAll('.item-card');
             const totalSpan = document.getElementById('totalCount');
@@ -521,7 +729,7 @@
 
             totalSpan.textContent = musicCards.length;
 
-            searchInput.addEventListener('input', function() {
+            searchInput.addEventListener('input', function () {
                 const keyword = this.value.trim().toLowerCase();
                 let visibleCount = 0;
 
@@ -553,4 +761,5 @@
         })();
     </script>
 </body>
+
 </html>
