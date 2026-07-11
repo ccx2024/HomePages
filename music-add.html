@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>音乐添加工具 - 直接提交 Gitee</title>
+    <title>音乐添加工具 - 提交到 Gitee</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -40,8 +40,6 @@
         .btn-secondary:hover { background: #cbd5e1; }
         .btn-success { background: #22c55e; color: #fff; }
         .btn-success:hover { background: #16a34a; }
-        .btn-danger { background: #ef4444; color: #fff; }
-        .btn-danger:hover { background: #dc2626; }
 
         .preview-box { background: #f8fafc; border-radius: 16px; padding: 24px 20px; border: 2px dashed #e2e8f0; min-height: 260px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: border-color 0.3s; }
         .preview-box.has-preview { border-color: #4f8cf7; border-style: solid; }
@@ -86,20 +84,20 @@
 <div class="container">
     <div class="header">
         <h1><i class="fas fa-music"></i> 音乐添加工具</h1>
-        <span class="badge"><i class="fas fa-cloud-upload-alt"></i> 直接提交 Gitee</span>
+        <span class="badge"><i class="fas fa-cloud-upload-alt"></i> 汇总到 music-add-list.html</span>
     </div>
     <div class="subtitle">
-        填写歌曲信息 → 选择封面和音乐文件 → 直接提交到 Gitee 仓库（无需下载到本地）<br />
+        填写歌曲信息 → 选择封面和音乐文件 → 提交后自动追加到根目录 <code>music-add-list.html</code><br />
         <span style="font-size:0.85rem; color:#94a3b8;">
             🌐 仓库地址：<span class="gitee-link">https://gitee.com/caocx-2012/home-pages</span>（分支：main）
         </span>
     </div>
 
-    <!-- Token 输入（仅 CCX 使用） -->
+    <!-- Token 输入 -->
     <div class="token-input">
         <label><i class="fas fa-key"></i> Gitee 私人令牌（首次使用需填入）</label>
         <input type="password" id="giteeToken" placeholder="请输入您的 Gitee Personal Access Token" />
-        <div class="hint">令牌将保存在浏览器本地。若未填写，提交功能不可用（不会下载任何文件）。</div>
+        <div class="hint">令牌保存在本地浏览器，仅用于 Gitee API 调用。</div>
     </div>
 
     <div class="grid-2">
@@ -171,9 +169,9 @@
                 1. 填写歌曲信息（标题必填）。<br />
                 2. 选择封面（可选）和音乐文件（必填）。<br />
                 3. 点击「预览」确认效果。<br />
-                4. 点击「🚀 提交到 Gitee」直接上传，<strong>不会下载任何文件到本地</strong>。<br />
-                <span style="color:#e74c3c; font-weight:600;">🌟 需要 CCX 配置 Gitee Token 才能自动上传</span><br />
-                若未配置 Token，将提示错误，不会执行任何下载操作。
+                4. 点击「🚀 提交到 Gitee」直接上传。<br />
+                5. 所有卡片代码将汇总到根目录 <code>music-add-list.html</code> 中。<br />
+                6. 打开该文件，复制对应卡片代码粘贴到 <code>music.html</code> 的 <code>.card-grid</code> 中。
             </div>
         </div>
     </div>
@@ -209,8 +207,9 @@
 
     const GITEE_OWNER = 'caocx-2012';
     const GITEE_REPO = 'home-pages';
-    const GITEE_BRANCH = 'main';  // ← 修改为 main 分支
+    const GITEE_BRANCH = 'main';
     const GITEE_API = 'https://gitee.com/api/v5/repos/' + GITEE_OWNER + '/' + GITEE_REPO + '/contents';
+    const CARDS_FILE = 'music-add-list.html';  // 根目录汇总文件
 
     let selectedCover = null;
     let selectedMusic = null;
@@ -301,16 +300,56 @@
         showToast('✅ 预览生成成功！');
     }
 
-    // 上传文件到 Gitee（使用 main 分支）
-    async function uploadToGitee(file, path, token, message) {
+    // ---------- Gitee API 辅助函数 ----------
+    async function getFileInfo(path, token) {
+        const url = GITEE_API + '/' + path + '?ref=' + GITEE_BRANCH;
+        const resp = await fetch(url, {
+            headers: { 'Authorization': 'token ' + token }
+        });
+        if (resp.status === 404) {
+            return null;
+        }
+        if (!resp.ok) {
+            throw new Error('获取文件信息失败: ' + (await resp.text()));
+        }
+        return await resp.json();
+    }
+
+    async function createOrUpdateFile(path, content, token, message, sha) {
+        const payload = {
+            message: message || '更新音乐卡片汇总',
+            content: btoa(unescape(encodeURIComponent(content))),
+            branch: GITEE_BRANCH
+        };
+        if (sha) {
+            payload.sha = sha;
+        }
+        const url = GITEE_API + '/' + path;
+        const method = sha ? 'PUT' : 'POST';
+        const resp = await fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'token ' + token
+            },
+            body: JSON.stringify(payload)
+        });
+        if (!resp.ok) {
+            const err = await resp.json();
+            throw new Error(err.message || '上传失败');
+        }
+        return await resp.json();
+    }
+
+    async function uploadFile(file, path, token, message) {
         const reader = new FileReader();
         return new Promise((resolve, reject) => {
             reader.onload = async function(e) {
                 const base64 = e.target.result.split(',')[1];
                 const payload = {
-                    message: message || '上传音乐资源',
+                    message: message || '上传文件',
                     content: base64,
-                    branch: GITEE_BRANCH  // 使用 main 分支
+                    branch: GITEE_BRANCH
                 };
                 try {
                     const resp = await fetch(GITEE_API + '/' + path, {
@@ -335,39 +374,69 @@
         });
     }
 
+    // ---------- 主提交逻辑 ----------
     async function handleSubmit() {
         const data = generateCardData();
         if (!data) return;
 
         const token = tokenInput.value.trim();
         if (!token) {
-            setSaveStatus('❌ 未配置 Gitee Token，无法提交。请在页面顶部填入 Token。', 'error');
+            setSaveStatus('❌ 未配置 Gitee Token，请在页面顶部填入。', 'error');
             showToast('❌ 缺少 Gitee Token');
             return;
         }
 
-        setSaveStatus('⏳ 正在提交到 Gitee (分支: main)...', 'uploading');
+        setSaveStatus('⏳ 正在提交到 Gitee...', 'uploading');
         uploadProgress.classList.add('show');
         progressBar.style.width = '10%';
 
         try {
             // 1. 上传封面（如果有）
             if (selectedCover) {
-                await uploadToGitee(selectedCover, 'image/' + selectedCover.name, token, '添加封面图片');
-                progressBar.style.width = '35%';
+                await uploadFile(selectedCover, 'image/' + selectedCover.name, token, '添加封面图片');
+                progressBar.style.width = '30%';
             }
             // 2. 上传音乐
-            await uploadToGitee(selectedMusic, 'music/' + selectedMusic.name, token, '添加音乐文件');
-            progressBar.style.width = '60%';
-            // 3. 生成并上传卡片 HTML
-            const cardFileName = data.title.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_').substring(0, 30) + '.html';
-            const cardContent = buildCardFileContent(data);
-            const blob = new Blob([cardContent], { type: 'text/html' });
-            const cardFile = new File([blob], cardFileName, { type: 'text/html' });
-            await uploadToGitee(cardFile, 'music-add-list/' + cardFileName, token, '添加音乐卡片');
-            progressBar.style.width = '90%';
+            await uploadFile(selectedMusic, 'music/' + selectedMusic.name, token, '添加音乐文件');
+            progressBar.style.width = '50%';
 
-            // 复制代码到剪贴板
+            // 3. 处理汇总文件 music-add-list.html
+            let fileInfo = null;
+            let existingContent = '';
+            let sha = null;
+            try {
+                fileInfo = await getFileInfo(CARDS_FILE, token);
+                if (fileInfo) {
+                    existingContent = atob(fileInfo.content);
+                    sha = fileInfo.sha;
+                }
+            } catch (err) {
+                if (err.message.includes('404')) {
+                    fileInfo = null;
+                } else {
+                    throw err;
+                }
+            }
+
+            const now = new Date();
+            const dateStr = now.getFullYear() + '-' +
+                String(now.getMonth()+1).padStart(2,'0') + '-' +
+                String(now.getDate()).padStart(2,'0') + ' ' +
+                String(now.getHours()).padStart(2,'0') + ':' +
+                String(now.getMinutes()).padStart(2,'0');
+            const comment = `<!-- 歌曲：${data.title} | 添加时间：${dateStr} -->`;
+            const newCardBlock = `\n\n${comment}\n${data.cardHtml}`;
+
+            let newContent = existingContent + newCardBlock;
+
+            if (!fileInfo) {
+                newContent = `<!-- ===== 音乐卡片汇总文件 ===== -->\n<!-- 每个卡片以注释分隔，复制需要的卡片到 music.html 的 .card-grid 中 -->\n${newCardBlock}`;
+            }
+
+            await createOrUpdateFile(CARDS_FILE, newContent, token, '追加音乐卡片', sha);
+            progressBar.style.width = '80%';
+
+            // 复制卡片代码到剪贴板
             if (navigator.clipboard) {
                 await navigator.clipboard.writeText(data.cardHtml);
             }
@@ -376,9 +445,10 @@
             setSaveStatus(`✅ 提交成功！
         📁 image/${data.coverFileName}
         📁 music/${data.musicFileName}
-        📁 music-add-list/${cardFileName}
+        📄 ${CARDS_FILE} 已追加新卡片
         📋 卡片代码已复制到剪贴板`, 'success');
-            showToast('🎉 已直接提交到 Gitee 仓库 main 分支，未下载任何文件到本地！');
+            showToast('🎉 已成功追加到 music-add-list.html！');
+
         } catch (err) {
             setSaveStatus('❌ 提交失败: ' + err.message, 'error');
             showToast('❌ 提交失败，请检查 Token 或网络');
@@ -389,28 +459,6 @@
                 progressBar.style.width = '0%';
             }, 4000);
         }
-    }
-
-    function buildCardFileContent(data) {
-        return `<!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8" /><title>${data.title} - 音乐卡片</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-<style>body{font-family:'Segoe UI',sans-serif;background:#f0f4ff;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:20px;}
-.item-card{background:#fff;border-radius:16px;border:1px solid #e2e8f0;padding:20px;max-width:320px;width:100%;box-shadow:0 8px 24px rgba(0,0,0,0.06);}
-.item-card img{width:100%;height:160px;object-fit:cover;border-radius:10px;background:#e2e8f0;}
-.item-card .item-title{font-weight:700;font-size:1.1rem;margin:12px 0 6px;}
-.item-card .item-desc{color:#64748b;font-size:0.9rem;margin-bottom:12px;}
-.download-btn{display:inline-block;background:#4f8cf7;color:#fff;border:none;padding:6px 18px;border-radius:30px;font-size:0.85rem;font-weight:500;cursor:pointer;font-family:inherit;}
-.download-btn:hover{background:#3a6fd1;}
-</style></head>
-<body>
-${data.cardHtml}
-<script>
-function downloadMusic(fileUrl,fileName){var a=document.createElement('a');a.href=fileUrl;a.download=fileName||fileUrl.split('/').pop();document.body.appendChild(a);a.click();document.body.removeChild(a);}
-<\/script>
-</body>
-</html>`;
     }
 
     function handleClear() {
