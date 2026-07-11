@@ -93,7 +93,6 @@
         </span>
     </div>
 
-    <!-- Token 输入 -->
     <div class="token-input">
         <label><i class="fas fa-key"></i> Gitee 私人令牌（首次使用需填入）</label>
         <input type="password" id="giteeToken" placeholder="请输入您的 Gitee Personal Access Token" />
@@ -209,13 +208,12 @@
     const GITEE_REPO = 'home-pages';
     const GITEE_BRANCH = 'main';
     const GITEE_API = 'https://gitee.com/api/v5/repos/' + GITEE_OWNER + '/' + GITEE_REPO + '/contents';
-    const CARDS_FILE = 'music-add-list.html';  // 根目录汇总文件
+    const CARDS_FILE = 'music-add-list.html';
 
     let selectedCover = null;
     let selectedMusic = null;
     let lastCardHtml = '';
 
-    // 加载保存的 Token
     const savedToken = localStorage.getItem('gitee_token');
     if (savedToken) tokenInput.value = savedToken;
     tokenInput.addEventListener('change', function() {
@@ -237,7 +235,6 @@
 
     function clearStatus() { saveStatus.style.display = 'none'; }
 
-    // 文件上传交互
     coverUploadArea.addEventListener('click', () => coverFileInput.click());
     musicUploadArea.addEventListener('click', () => musicFileInput.click());
     coverFileInput.addEventListener('change', function() {
@@ -391,7 +388,7 @@
         progressBar.style.width = '10%';
 
         try {
-            // 1. 上传封面（如果有）
+            // 1. 上传封面
             if (selectedCover) {
                 await uploadFile(selectedCover, 'image/' + selectedCover.name, token, '添加封面图片');
                 progressBar.style.width = '30%';
@@ -404,20 +401,30 @@
             let fileInfo = null;
             let existingContent = '';
             let sha = null;
+
             try {
                 fileInfo = await getFileInfo(CARDS_FILE, token);
-                if (fileInfo) {
-                    existingContent = atob(fileInfo.content);
-                    sha = fileInfo.sha;
+                if (fileInfo && fileInfo.content) {
+                    // 尝试解码
+                    try {
+                        // 去除可能存在的空格/换行
+                        const raw = fileInfo.content.replace(/\s/g, '');
+                        existingContent = atob(raw);
+                        sha = fileInfo.sha;
+                    } catch (decodeErr) {
+                        console.warn('解码现有文件失败，将作为空文件处理', decodeErr);
+                        // 解码失败则当作文件不存在，重新创建
+                        fileInfo = null;
+                        sha = null;
+                        existingContent = '';
+                    }
                 }
             } catch (err) {
-                if (err.message.includes('404')) {
-                    fileInfo = null;
-                } else {
-                    throw err;
-                }
+                // 文件不存在或其他错误，忽略
+                console.warn('获取文件信息失败，将创建新文件', err);
             }
 
+            // 构建新卡片块
             const now = new Date();
             const dateStr = now.getFullYear() + '-' +
                 String(now.getMonth()+1).padStart(2,'0') + '-' +
@@ -428,11 +435,12 @@
             const newCardBlock = `\n\n${comment}\n${data.cardHtml}`;
 
             let newContent = existingContent + newCardBlock;
-
             if (!fileInfo) {
+                // 文件不存在或解码失败，创建新文件并添加头部注释
                 newContent = `<!-- ===== 音乐卡片汇总文件 ===== -->\n<!-- 每个卡片以注释分隔，复制需要的卡片到 music.html 的 .card-grid 中 -->\n${newCardBlock}`;
             }
 
+            // 上传（如果 sha 存在则更新，否则创建）
             await createOrUpdateFile(CARDS_FILE, newContent, token, '追加音乐卡片', sha);
             progressBar.style.width = '80%';
 
