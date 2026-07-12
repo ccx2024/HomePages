@@ -192,7 +192,6 @@
 
     let selectedCover = null;
     let selectedMusic = null;
-    let lastCardHtml = '';
 
     const savedToken = localStorage.getItem('gitee_token');
     if (savedToken) tokenInput.value = savedToken;
@@ -274,7 +273,32 @@
         showToast('✅ 预览已生成');
     }
 
-    // ---------- Gitee API 辅助函数 ----------
+    // ========== 编码修复：正确处理 UTF-8 中文 ==========
+
+    // 将字符串转为 Base64（支持中文）
+    function utf8ToBase64(str) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(str);
+        let binary = '';
+        for (let i = 0; i < data.length; i++) {
+            binary += String.fromCharCode(data[i]);
+        }
+        return btoa(binary);
+    }
+
+    // 将 Base64 转为 UTF-8 字符串（支持中文）
+    function base64ToUtf8(base64) {
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+        }
+        const decoder = new TextDecoder('utf-8');
+        return decoder.decode(bytes);
+    }
+
+    // ========== Gitee API 辅助函数 ==========
+
     async function getFileInfo(path, token) {
         const url = GITEE_API + '/' + path + '?ref=' + GITEE_BRANCH;
         const resp = await fetch(url, {
@@ -289,23 +313,22 @@
         return await resp.json();
     }
 
-    // 改进的创建/更新函数：支持自动处理 409 冲突
     async function createOrUpdateFile(path, content, token, message, sha) {
-        // 如果没提供 sha，尝试获取
         if (!sha) {
             try {
                 const info = await getFileInfo(path, token);
                 if (info) {
                     sha = info.sha;
                 }
-            } catch (e) {
-                // 忽略，可能文件不存在
-            }
+            } catch (e) {}
         }
+
+        // 使用 utf8ToBase64 正确处理中文
+        const base64Content = utf8ToBase64(content);
 
         const payload = {
             message: message || '更新音乐卡片汇总',
-            content: btoa(unescape(encodeURIComponent(content))),
+            content: base64Content,
             branch: GITEE_BRANCH
         };
         if (sha) {
@@ -325,7 +348,6 @@
         });
 
         if (resp.status === 409) {
-            // 文件冲突，尝试获取最新 sha 并重试（PUT）
             const info = await getFileInfo(path, token);
             if (!info) {
                 throw new Error('文件冲突且无法获取文件信息');
@@ -387,7 +409,8 @@
         });
     }
 
-    // ---------- 主提交逻辑 ----------
+    // ========== 主提交逻辑 ==========
+
     async function handleSubmit() {
         const data = generateCardData();
         if (!data) return;
@@ -404,16 +427,13 @@
         progressBar.style.width = '10%';
 
         try {
-            // 1. 上传封面
             if (selectedCover) {
                 await uploadFile(selectedCover, 'image/' + selectedCover.name, token, '添加封面图片');
                 progressBar.style.width = '30%';
             }
-            // 2. 上传音乐
             await uploadFile(selectedMusic, 'music/' + selectedMusic.name, token, '添加音乐文件');
             progressBar.style.width = '50%';
 
-            // 3. 处理汇总文件（使用改进的函数）
             let existingContent = '';
             let sha = null;
 
@@ -421,8 +441,8 @@
                 const fileInfo = await getFileInfo(CARDS_FILE, token);
                 if (fileInfo && fileInfo.content) {
                     try {
-                        const raw = fileInfo.content.replace(/\s/g, '');
-                        existingContent = atob(raw);
+                        // 使用 base64ToUtf8 正确解码中文
+                        existingContent = base64ToUtf8(fileInfo.content);
                         sha = fileInfo.sha;
                     } catch (decodeErr) {
                         console.warn('解码现有文件失败，将作为空文件处理', decodeErr);
@@ -448,11 +468,9 @@
                 newContent = `<!-- ===== 音乐卡片汇总文件 ===== -->\n<!-- 每个卡片以注释分隔，复制需要的卡片到音乐页面 -->\n${newCardBlock}`;
             }
 
-            // 使用改进的 createOrUpdateFile，自动处理冲突
             await createOrUpdateFile(CARDS_FILE, newContent, token, '追加音乐卡片', sha);
             progressBar.style.width = '80%';
 
-            // 复制卡片代码到剪贴板
             if (navigator.clipboard) {
                 await navigator.clipboard.writeText(data.cardHtml);
             }
