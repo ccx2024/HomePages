@@ -289,6 +289,12 @@
         .download-btn-official:hover {
             background: #d97706;
         }
+        .download-btn-lanzou {
+            background: #6c5ce7;
+        }
+        .download-btn-lanzou:hover {
+            background: #5a4bd1;
+        }
         /* 按钮组容器 */
         .btn-group {
             display: flex;
@@ -540,7 +546,7 @@
 
         <div class="software-grid" id="softwareGrid">
 
-            <!-- Cloudflare Client - 按钮排版优化 -->
+            <!-- Cloudflare Client - 三个下载按钮 -->
             <div class="software-card" data-title="cloudflare client warp 代理 加速 dns 安全">
                 <div class="sw-icon"><i class="fab fa-cloudflare"></i></div>
                 <div class="sw-name">Cloudflare Client</div>
@@ -551,6 +557,9 @@
                     <div class="btn-group">
                         <a href="https://downloads.cloudflareclient.com/v1/download/windows/ga" target="_blank" class="download-btn download-btn-official">
                             <i class="fas fa-external-link-alt"></i> 官方下载
+                        </a>
+                        <a href="https://wwbuu.lanzoub.com/iWHy03w83gdg" target="_blank" class="download-btn download-btn-lanzou">
+                            <i class="fas fa-cloud-download-alt"></i> 蓝奏云下载
                         </a>
                     </div>
                 </div>
@@ -797,31 +806,6 @@
                 }
             });
         })();
-
-        // ===== 下载函数（支持本地文件） =====
-        function downloadFile(fileUrl, fileName) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', fileUrl, true);
-            xhr.responseType = 'blob';
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    var blob = xhr.response;
-                    var a = document.createElement('a');
-                    a.href = URL.createObjectURL(blob);
-                    a.download = fileName;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
-                } else {
-                    alert('下载失败，请检查文件是否存在。');
-                }
-            };
-            xhr.onerror = function() {
-                alert('读取失败，请检查文件路径。');
-            };
-            xhr.send();
-        }
     </script>
 
 </body>
