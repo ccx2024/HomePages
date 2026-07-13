@@ -276,7 +276,7 @@
             cursor: pointer;
             transition: all var(--transition);
             font-family: inherit;
-            margin-left: auto;
+            white-space: nowrap;
         }
         .download-btn:hover {
             background: var(--primary-dark);
@@ -285,10 +285,16 @@
         }
         .download-btn-official {
             background: #f59e0b;
-            margin-left: 0;
         }
         .download-btn-official:hover {
             background: #d97706;
+        }
+        /* 按钮组容器 */
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+            flex-shrink: 0;
         }
 
         /* ===== 文章列表 ===== */
@@ -449,6 +455,16 @@
             .section-title {
                 font-size: 1.2rem;
             }
+            /* 手机端允许按钮换行 */
+            .btn-group {
+                flex-wrap: wrap;
+                margin-left: 0;
+                width: 100%;
+                justify-content: flex-end;
+            }
+            .sw-footer {
+                flex-wrap: wrap;
+            }
         }
         @media (max-width: 480px) {
             .container {
@@ -456,6 +472,9 @@
             }
             .software-card {
                 padding: 18px 20px;
+            }
+            .btn-group {
+                justify-content: flex-start;
             }
         }
 
@@ -521,20 +540,22 @@
 
         <div class="software-grid" id="softwareGrid">
 
-            <!-- Cloudflare Client - 同时包含官方下载和本地下载 -->
+            <!-- Cloudflare Client - 按钮排版优化 -->
             <div class="software-card" data-title="cloudflare client warp 代理 加速 dns 安全">
                 <div class="sw-icon"><i class="fab fa-cloudflare"></i></div>
                 <div class="sw-name">Cloudflare Client</div>
                 <div class="sw-version">WARP · 2026.06</div>
                 <div class="sw-desc">Cloudflare 官方客户端，提供 WARP 加密隧道、DNS over HTTPS、隐私保护与网络加速。</div>
-                <div class="sw-footer" style="flex-wrap: wrap; gap: 8px;">
+                <div class="sw-footer">
                     <span class="sw-tag"><i class="fas fa-shield-alt"></i> 安全 · 加速</span>
-                    <a href="https://downloads.cloudflareclient.com/v1/download/windows/ga" target="_blank" class="download-btn download-btn-official">
-                        <i class="fas fa-external-link-alt"></i> 官方下载
-                    </a>
-                    <button class="download-btn" onclick="downloadFile('software/cloudflared-windows-amd64.msi','cloudflared-windows-amd64.msi')">
-                        <i class="fas fa-download"></i> 本地下载
-                    </button>
+                    <div class="btn-group">
+                        <a href="https://downloads.cloudflareclient.com/v1/download/windows/ga" target="_blank" class="download-btn download-btn-official">
+                            <i class="fas fa-external-link-alt"></i> 官方下载
+                        </a>
+                        <button class="download-btn" onclick="downloadFile('software/cloudflared-windows-amd64.msi','cloudflared-windows-amd64.msi')">
+                            <i class="fas fa-download"></i> 本地下载
+                        </button>
+                    </div>
                 </div>
             </div>
 
