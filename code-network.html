@@ -283,6 +283,13 @@
             color: #fff;
             transform: scale(1.02);
         }
+        .download-btn-official {
+            background: #f59e0b;
+            margin-left: 0;
+        }
+        .download-btn-official:hover {
+            background: #d97706;
+        }
 
         /* ===== 文章列表 ===== */
         .article-list {
@@ -514,16 +521,19 @@
 
         <div class="software-grid" id="softwareGrid">
 
-            <!-- Cloudflare Client - 下载按钮指向本地文件 -->
+            <!-- Cloudflare Client - 同时包含官方下载和本地下载 -->
             <div class="software-card" data-title="cloudflare client warp 代理 加速 dns 安全">
                 <div class="sw-icon"><i class="fab fa-cloudflare"></i></div>
                 <div class="sw-name">Cloudflare Client</div>
                 <div class="sw-version">WARP · 2026.06</div>
                 <div class="sw-desc">Cloudflare 官方客户端，提供 WARP 加密隧道、DNS over HTTPS、隐私保护与网络加速。</div>
-                <div class="sw-footer">
+                <div class="sw-footer" style="flex-wrap: wrap; gap: 8px;">
                     <span class="sw-tag"><i class="fas fa-shield-alt"></i> 安全 · 加速</span>
+                    <a href="https://downloads.cloudflareclient.com/v1/download/windows/ga" target="_blank" class="download-btn download-btn-official">
+                        <i class="fas fa-external-link-alt"></i> 官方下载
+                    </a>
                     <button class="download-btn" onclick="downloadFile('software/cloudflared-windows-amd64.msi','cloudflared-windows-amd64.msi')">
-                        <i class="fas fa-download"></i> 下载
+                        <i class="fas fa-download"></i> 本地下载
                     </button>
                 </div>
             </div>
