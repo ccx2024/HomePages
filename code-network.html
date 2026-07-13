@@ -207,12 +207,34 @@
             text-align: right;
         }
 
-        /* ===== 软件卡片网格 ===== */
+        /* ===== 区块标题 ===== */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 36px 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-title i {
+            color: var(--primary);
+            font-size: 1.4rem;
+            width: 2rem;
+            text-align: center;
+        }
+        .section-title .title-line {
+            flex: 1;
+            height: 2px;
+            background: var(--border);
+            margin-left: 8px;
+        }
+
+        /* ===== 软件下载卡片（网格） ===== */
         .software-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 28px;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
         .software-card {
             background: var(--card-bg);
@@ -358,28 +380,6 @@
             flex-shrink: 0;
         }
 
-        /* ===== 区块标题 ===== */
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin: 36px 0 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .section-title i {
-            color: var(--primary);
-            font-size: 1.4rem;
-            width: 2rem;
-            text-align: center;
-        }
-        .section-title .title-line {
-            flex: 1;
-            height: 2px;
-            background: var(--border);
-            margin-left: 8px;
-        }
-
         /* ===== 无结果 ===== */
         .no-result {
             text-align: center;
@@ -514,7 +514,7 @@
 
         <div class="software-grid" id="softwareGrid">
 
-            <!-- Cloudflare Client - 下载按钮指向本地文件 -->
+            <!-- Cloudflare Client -->
             <div class="software-card" data-title="cloudflare client warp 代理 加速 dns 安全">
                 <div class="sw-icon"><i class="fab fa-cloudflare"></i></div>
                 <div class="sw-name">Cloudflare Client</div>
@@ -527,49 +527,6 @@
                     </button>
                 </div>
             </div>
-
-            <!-- 1.1.1.1 App -->
-            <div class="software-card" data-title="1.1.1.1 dns cloudflare 隐私 加密 移动端">
-                <div class="sw-icon"><i class="fas fa-globe"></i></div>
-                <div class="sw-name">1.1.1.1 App</div>
-                <div class="sw-version">v2.5 · 2026.05</div>
-                <div class="sw-desc">Cloudflare 的移动端隐私 DNS 应用，支持加密查询、阻止恶意网站，保护上网安全。</div>
-                <div class="sw-footer">
-                    <span class="sw-tag"><i class="fas fa-mobile-alt"></i> 移动端 · DNS</span>
-                    <button class="download-btn" onclick="window.open('https://1.1.1.1/','_blank')">
-                        <i class="fas fa-download"></i> 下载
-                    </button>
-                </div>
-            </div>
-
-            <!-- Tailscale -->
-            <div class="software-card" data-title="tailscale vpn 零信任 内网穿透  mesh 组网">
-                <div class="sw-icon"><i class="fas fa-route"></i></div>
-                <div class="sw-name">Tailscale</div>
-                <div class="sw-version">v1.76 · 2026.06</div>
-                <div class="sw-desc">基于 WireGuard 的零信任组网工具，轻松构建安全的内网穿透和 Mesh VPN 网络。</div>
-                <div class="sw-footer">
-                    <span class="sw-tag"><i class="fas fa-link"></i> 组网 · VPN</span>
-                    <button class="download-btn" onclick="window.open('https://tailscale.com/download','_blank')">
-                        <i class="fas fa-download"></i> 下载
-                    </button>
-                </div>
-            </div>
-
-            <!-- ZeroTier -->
-            <div class="software-card" data-title="zerotier sdn 虚拟网络 内网穿透 组网 开源">
-                <div class="sw-icon"><i class="fas fa-sitemap"></i></div>
-                <div class="sw-name">ZeroTier</div>
-                <div class="sw-version">v1.14 · 2026.05</div>
-                <div class="sw-desc">开源 SDN 软件，将任意设备连接到同一个虚拟局域网，实现跨地域内网互联。</div>
-                <div class="sw-footer">
-                    <span class="sw-tag"><i class="fas fa-code-branch"></i> 开源 · SDN</span>
-                    <button class="download-btn" onclick="window.open('https://www.zerotier.com/download/','_blank')">
-                        <i class="fas fa-download"></i> 下载
-                    </button>
-                </div>
-            </div>
-
         </div>
 
         <!-- ===== 二、网络知识文章 ===== -->
@@ -724,6 +681,15 @@
             }, { passive: true });
         })();
 
+        // ===== 下载模拟（跳转到官网） =====
+        function downloadFile(url, name) {
+            if (url.startsWith('http')) {
+                window.open(url, '_blank');
+            } else {
+                alert('下载链接配置中，请前往官网获取最新版本。');
+            }
+        }
+
         // ===== 🔍 搜索功能（软件 + 文章） =====
         (function() {
             const searchInput = document.getElementById('searchNetwork');
@@ -739,6 +705,7 @@
                 const keyword = this.value.trim().toLowerCase();
                 let visibleCount = 0;
 
+                // 搜索软件
                 softwareCards.forEach(card => {
                     const title = (card.dataset.title || '').toLowerCase();
                     const desc = (card.querySelector('.sw-desc')?.textContent || '').toLowerCase();
@@ -747,6 +714,7 @@
                     if (match) visibleCount++;
                 });
 
+                // 搜索文章
                 articleItems.forEach(item => {
                     const title = (item.dataset.title || '').toLowerCase();
                     const excerpt = (item.querySelector('.art-excerpt')?.textContent || '').toLowerCase();
@@ -755,6 +723,7 @@
                     if (match) visibleCount++;
                 });
 
+                // 无结果
                 if (visibleCount === 0 && keyword !== '') {
                     noResult.style.display = 'block';
                 } else {
@@ -769,31 +738,6 @@
                 }
             });
         })();
-
-        // ===== 下载函数（支持本地文件） =====
-        function downloadFile(fileUrl, fileName) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', fileUrl, true);
-            xhr.responseType = 'blob';
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    var blob = xhr.response;
-                    var a = document.createElement('a');
-                    a.href = URL.createObjectURL(blob);
-                    a.download = fileName;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
-                } else {
-                    alert('下载失败，请检查文件是否存在。');
-                }
-            };
-            xhr.onerror = function() {
-                alert('读取失败，请检查文件路径。');
-            };
-            xhr.send();
-        }
     </script>
 
 </body>
